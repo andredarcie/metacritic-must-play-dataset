@@ -1,26 +1,58 @@
-import pandas as pd
+from bs4 import BeautifulSoup
+import requests
+import time
+import csv
+from datetime import datetime
 
-csv_filename = "metacritic_must_play_games_2025-05-04.csv"
-df = pd.read_csv(csv_filename)
-print("📂 Columns do CSV:", df.columns)
+headers = {
+    "User-Agent": "Mozilla/5.0"
+}
 
-df["release_date"] = pd.to_datetime(df["release_date"], format="%b %d, %Y", errors="coerce")
-df["year"] = df["release_date"].dt.year
-df["decade"] = (df["year"] // 10) * 10
+all_games = []
 
-print(f"\n🎮 Total must-play games: {len(df)}")
+print("🔎 Starting scraping Metacritic must-play games...\n")
 
-print("\n📊 Games by decade:")
-print(df["decade"].value_counts().sort_index())
+for page in range(1, 17):
+    print(f"🔎 Accessing page {page}...")
+    url = f"https://www.metacritic.com/browse/game/?releaseYearMin=1958&releaseYearMax=2025&page={page}"
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.text, "html.parser")
+    cards = soup.select("a.c-finderProductCard_container")
 
-print("\n📅 Top 5 years with most must-play games:")
-print(df["year"].value_counts().head(5).sort_values(ascending=False))
+    if not cards:
+        print("⚠️ No game cards found. Stopping.")
+        break
 
-print("\n🏆 Metascore distribution:")
-print(df["metascore"].value_counts().sort_index())
+    for card in cards:
+        title_elem = card.select_one(".c-finderProductCard_titleHeading span:nth-of-type(2)")
+        rank_elem = card.select_one(".c-finderProductCard_titleHeading span:nth-of-type(1)")
+        date_elem = card.select_one(".c-finderProductCard_meta span:nth-of-type(1)")
+        metascore_elem = card.select_one(".c-siteReviewScore span")
+        mustplay_elem = card.select_one('img[alt="must-play"]')
 
-print("\n📌 Oldest must-play game:")
-print(df.sort_values("release_date").iloc[0])
+        if mustplay_elem is None:
+            continue  # skip if not must-play
 
-print("\n📌 Newest must-play game:")
-print(df.sort_values("release_date", ascending=False).iloc[0])
+        game = {
+            "rank": rank_elem.text.strip() if rank_elem else None,
+            "title": title_elem.text.strip() if title_elem else None,
+            "release_date": date_elem.text.strip() if date_elem else None,
+            "metascore": int(metascore_elem.text.strip()) if metascore_elem else None
+        }
+
+        all_games.append(game)
+
+    time.sleep(1)  # avoid IP block
+
+print("\n✅ Scraping completed.\n")
+
+# Save to CSV with today's date in filename
+today_str = datetime.today().strftime("%Y-%m-%d")
+csv_filename = f"metacritic_must_play_games_{today_str}.csv"
+
+with open(csv_filename, mode='w', newline='', encoding='utf-8') as csv_file:
+    writer = csv.DictWriter(csv_file, fieldnames=["rank", "title", "release_date", "metascore"])
+    writer.writeheader()
+    writer.writerows(all_games)
+
+print(f"📁 CSV file saved: {csv_filename}")
