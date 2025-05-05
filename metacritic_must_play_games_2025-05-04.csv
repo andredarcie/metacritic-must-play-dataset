@@ -1,0 +1,333 @@
+rank,title,release_date,metascore
+1.,The Legend of Zelda: Ocarina of Time,"Nov 23, 1998",99
+2.,SoulCalibur,"Sep 8, 1999",98
+3.,Grand Theft Auto IV,"Apr 29, 2008",98
+4.,Super Mario Galaxy,"Nov 12, 2007",97
+5.,Super Mario Galaxy 2,"May 23, 2010",97
+6.,The Legend of Zelda: Breath of the Wild,"Mar 3, 2017",97
+7.,Tony Hawk's Pro Skater 3,"Oct 30, 2001",97
+8.,Perfect Dark (2000),"May 22, 2000",97
+9.,Red Dead Redemption 2,"Oct 26, 2018",97
+10.,Grand Theft Auto V,"Nov 18, 2014",97
+11.,Metroid Prime,"Nov 17, 2002",97
+12.,Grand Theft Auto III,"Oct 22, 2001",97
+13.,Super Mario Odyssey,"Oct 27, 2017",97
+14.,Halo: Combat Evolved,"Nov 15, 2001",97
+15.,NFL 2K1,"Sep 7, 2000",97
+16.,Half-Life 2,"Nov 16, 2004",96
+17.,BioShock,"Aug 21, 2007",96
+18.,GoldenEye 007,"Aug 25, 1997",96
+19.,Uncharted 2: Among Thieves,"Oct 13, 2009",96
+20.,Resident Evil 4 (2005),"Jan 11, 2005",96
+21.,Baldur's Gate 3,"Aug 3, 2023",96
+22.,The Orange Box,"Oct 10, 2007",96
+23.,Tekken 3,"Apr 29, 1998",96
+24.,Mass Effect 2,"Jan 26, 2010",96
+26.,Elden Ring,"Feb 25, 2022",96
+27.,The Elder Scrolls V: Skyrim,"Nov 11, 2011",96
+28.,Half-Life,"Nov 19, 1998",96
+29.,The Legend of Zelda: Tears of the Kingdom,"May 12, 2023",96
+30.,The Legend of Zelda: The Wind Waker,"Mar 24, 2003",96
+31.,Gran Turismo,"May 12, 1998",96
+32.,Metal Gear Solid 2: Sons of Liberty,"Nov 12, 2001",96
+33.,Grand Theft Auto Double Pack,"Nov 4, 2003",96
+35.,Baldur's Gate II: Shadows of Amn,"Sep 24, 2000",95
+36.,Grand Theft Auto: San Andreas,"Oct 26, 2004",95
+37.,Grand Theft Auto: Vice City,"Oct 29, 2002",95
+38.,LittleBigPlanet,"Oct 27, 2008",95
+40.,Gran Turismo 3: A-Spec,"Jul 9, 2001",95
+41.,Halo 2,"Nov 9, 2004",95
+42.,The Legend of Zelda: Majora's Mask,"Oct 25, 2000",95
+43.,The Legend of Zelda: A Link to the Past / Four Swords,"Dec 3, 2002",95
+44.,The Last of Us,"Jun 14, 2013",95
+45.,The Legend of Zelda: Twilight Princess,"Nov 19, 2006",95
+46.,Madden NFL 2003,"Aug 12, 2002",95
+47.,Persona 5 Royal,"Mar 31, 2020",95
+48.,The Last of Us Remastered,"Jul 29, 2014",95
+49.,Red Dead Redemption,"May 18, 2010",95
+50.,Portal 2,"Apr 19, 2011",95
+51.,Astro Bot,"Sep 6, 2024",94
+52.,Final Fantasy IX,"Nov 13, 2000",94
+53.,God of War,"Apr 20, 2018",94
+54.,Tony Hawk's Pro Skater 4,"Oct 23, 2002",94
+55.,Elden Ring: Shadow of the Erdtree,"Jun 21, 2024",94
+56.,Devil May Cry,"Oct 16, 2001",94
+57.,Madden NFL 2002,"Aug 19, 2001",94
+58.,Batman: Arkham City,"Oct 18, 2011",94
+59.,Metroid Prime Remastered,"Feb 8, 2023",94
+60.,The Legend of Zelda: Ocarina of Time 3D,"Jun 19, 2011",94
+61.,Chrono Cross,"Aug 15, 2000",94
+62.,Madden NFL 2004,"Aug 12, 2003",94
+63.,Gears of War,"Nov 7, 2006",94
+64.,The Elder Scrolls IV: Oblivion,"Mar 20, 2006",94
+67.,Metaphor: ReFantazio,"Oct 11, 2024",94
+68.,Call of Duty 4: Modern Warfare,"Nov 5, 2007",94
+69.,BioShock Infinite,"Mar 25, 2013",94
+70.,Halo 3,"Sep 25, 2007",94
+71.,Ninja Gaiden Black,"Sep 20, 2005",94
+72.,Metal Gear Solid,"Oct 21, 1998",94
+73.,Jet Set Radio (2000),"Oct 30, 2000",94
+74.,Super Mario Advance 4: Super Mario Bros. 3,"Oct 21, 2003",94
+75.,Grim Fandango,"Oct 14, 1998",94
+76.,Tom Clancy's Splinter Cell: Chaos Theory,"Mar 28, 2005",94
+77.,God of War: Ragnarok,"Nov 9, 2022",94
+78.,Resident Evil Code: Veronica,"Feb 29, 2000",94
+79.,Burnout 3: Takedown,"Sep 7, 2004",94
+81.,Metal Gear Solid 3: Subsistence,"Mar 14, 2006",94
+82.,Call of Duty: Modern Warfare 2,"Nov 10, 2009",94
+83.,Metal Gear Solid 4: Guns of the Patriots,"Jun 12, 2008",94
+84.,God of War (2005),"Mar 22, 2005",94
+85.,Star Wars: Knights of the Old Republic,"Jul 17, 2003",94
+86.,Sid Meier's Civilization IV,"Oct 25, 2005",94
+87.,Virtua Fighter 4,"Mar 17, 2002",94
+88.,Super Smash Bros. Brawl,"Mar 9, 2008",93
+89.,Company of Heroes,"Sep 13, 2006",93
+90.,Gran Turismo 2,"Dec 23, 1999",93
+91.,The Last of Us Part II,"Jun 19, 2020",93
+92.,Tom Clancy's Splinter Cell: Pandora Tomorrow,"Mar 23, 2004",93
+93.,Grand Theft Auto: Chinatown Wars,"Mar 17, 2009",93
+94.,Pac-Man Championship Edition DX,"Nov 17, 2010",93
+96.,Half-Life: Alyx,"Mar 23, 2020",93
+97.,Divinity: Original Sin II,"Sep 14, 2017",93
+98.,Unreal Tournament 2004,"Mar 16, 2004",93
+99.,Braid,"Aug 6, 2008",93
+100.,God of War II,"Mar 13, 2007",93
+101.,Super Mario 3D World,"Nov 22, 2013",93
+102.,Starcraft II: Wings of Liberty,"Jul 27, 2010",93
+103.,SSX (2000),"Oct 30, 2000",93
+104.,Street Fighter IV,"Feb 17, 2009",93
+105.,Minecraft,"Nov 18, 2011",93
+106.,Persona 4 Golden,"Nov 20, 2012",93
+107.,Persona 5,"Apr 4, 2017",93
+108.,Homeworld,"Aug 31, 1999",93
+109.,Quake III Arena,"Oct 22, 2000",93
+110.,Tom Clancy's Splinter Cell,"Nov 17, 2002",93
+111.,SSX 3,"Oct 20, 2003",93
+112.,Okami,"Sep 19, 2006",93
+113.,Fallout 3,"Oct 28, 2008",93
+114.,Gears of War 2,"Nov 7, 2008",93
+115.,SoulCalibur II,"Aug 27, 2003",93
+116.,Pro Evolution Soccer 2,"Mar 11, 2003",93
+117.,Mass Effect 3,"Mar 6, 2012",93
+118.,Metal Gear Solid V: The Phantom Pain,"Sep 1, 2015",93
+119.,Skies of Arcadia,"Nov 13, 2000",93
+120.,The Legend of Zelda: Skyward Sword,"Nov 20, 2011",93
+121.,Mario Kart: Super Circuit,"Aug 26, 2001",93
+122.,Rock Band 3,"Oct 26, 2010",93
+123.,Viewtiful Joe,"Oct 7, 2003",93
+124.,NBA 2K1,"Nov 1, 2000",93
+125.,Hades,"Sep 17, 2020",93
+126.,Resident Evil 4,"Mar 24, 2023",93
+127.,Virtua Fighter 4: Evolution,"Aug 13, 2003",93
+128.,Uncharted 4: A Thief's End,"May 10, 2016",93
+129.,Super Smash Bros. Ultimate,"Dec 7, 2018",93
+130.,Paper Mario,"Feb 5, 2001",93
+132.,INSIDE,"Jun 29, 2016",93
+133.,World of Warcraft,"Nov 23, 2004",93
+134.,World Soccer Winning Eleven 7 International,"Feb 17, 2004",93
+136.,Forza Horizon 4,"Sep 28, 2018",92
+137.,God of War III,"Mar 16, 2010",92
+138.,SSX Tricky,"Nov 5, 2001",92
+139.,NHL 2002,"Sep 24, 2001",92
+140.,NFL 2K3,"Aug 21, 2002",92
+141.,Prince of Persia: The Sands of Time,"Nov 10, 2003",92
+142.,Uncharted 3: Drake's Deception,"Nov 1, 2011",92
+143.,Final Fantasy VII Rebirth,"Feb 29, 2024",92
+144.,Rock Band,"Nov 20, 2007",92
+145.,Super Mario Bros. Wonder,"Oct 20, 2023",92
+147.,Bloodborne,"Mar 24, 2015",92
+148.,Eternal Darkness: Sanity's Requiem,"Jun 23, 2002",92
+149.,Warcraft III: Reign of Chaos,"Jul 3, 2002",92
+151.,The Sims,"Feb 4, 2000",92
+152.,Banjo-Kazooie,"Jun 29, 1998",92
+153.,Celeste,"Jan 25, 2018",92
+154.,Forza Motorsport (2005),"May 3, 2005",92
+155.,Forza Horizon 5,"Nov 5, 2021",92
+156.,Vagrant Story,"May 15, 2000",92
+157.,Advance Wars,"Sep 9, 2001",92
+158.,Clair Obscur: Expedition 33,"Apr 24, 2025",92
+159.,Team Fortress 2,"Oct 10, 2007",92
+160.,System Shock 2,"Aug 11, 1999",92
+161.,Final Fantasy XII,"Oct 31, 2006",92
+162.,The Witcher 3: Wild Hunt,"May 19, 2015",92
+163.,Super Mario World: Super Mario Advance 2,"Feb 9, 2002",92
+164.,ESPN NFL 2K5,"Jul 20, 2004",92
+165.,Super Smash Bros. Melee,"Dec 3, 2001",92
+166.,Virtua Tennis,"Jul 12, 2000",92
+167.,Rome: Total War,"Sep 22, 2004",92
+168.,Forza Motorsport 3,"Oct 27, 2009",92
+169.,Demon's Souls,"Nov 11, 2020",92
+170.,Street Fighter 6,"Jun 2, 2023",92
+171.,Blue Prince,"Apr 10, 2025",92
+172.,Undertale,"Sep 15, 2015",92
+173.,Batman: Arkham Asylum,"Aug 25, 2009",92
+174.,Super Mario Sunshine,"Aug 26, 2002",92
+175.,Tony Hawk's Pro Skater,"Sep 29, 1999",92
+176.,Thief: The Dark Project,"Nov 30, 1998",92
+177.,Fire Emblem: Awakening,"Feb 4, 2013",92
+178.,Age of Empires II: The Age of Kings,"Sep 30, 1999",92
+179.,Final Fantasy X,"Dec 17, 2001",92
+180.,Sid Meier's Alpha Centauri,"Feb 12, 1999",92
+182.,Divinity: Original Sin II - Definitive Edition,"Aug 31, 2018",92
+183.,Galactic Civilizations II: Twilight of the Arnor,"Apr 30, 2008",92
+184.,Super Smash Bros. for Nintendo 3DS / Wii U,"Nov 21, 2014",92
+185.,Guitar Hero II,"Nov 7, 2006",92
+186.,Final Fantasy VII,"Sep 7, 1997",92
+187.,Chrono Trigger,"Nov 25, 2008",92
+188.,Final Fantasy XIV: Endwalker,"Dec 7, 2021",92
+189.,Journey,"Mar 13, 2012",92
+190.,Medal of Honor (1999),"Oct 31, 1999",92
+191.,Conker's Bad Fur Day,"Mar 4, 2001",92
+192.,Rock Band 2,"Sep 14, 2008",92
+193.,Mario Kart 8 Deluxe,"Apr 28, 2017",92
+194.,The ICO & Shadow of the Colossus Collection,"Sep 27, 2011",92
+195.,Metroid Prime 2: Echoes,"Nov 15, 2004",92
+197.,Metroid Fusion,"Nov 17, 2002",92
+198.,The Witcher 3: Wild Hunt - Blood and Wine,"May 30, 2016",92
+199.,Final Fantasy VI,"Feb 5, 2007",92
+200.,Rayman Legends,"Sep 3, 2013",92
+201.,UFO 50,"Sep 18, 2024",91
+202.,Madden NFL 2005,"Aug 9, 2004",91
+203.,Against the Storm,"Dec 8, 2023",91
+205.,Medal of Honor: Allied Assault,"Jan 20, 2002",91
+206.,LittleBigPlanet 2,"Jan 18, 2011",91
+207.,Microsoft Flight Simulator,"Aug 18, 2020",91
+208.,Guitar Hero,"Nov 7, 2005",91
+210.,World of Warcraft: Wrath of the Lich King,"Nov 13, 2008",91
+211.,Metroid Prime Trilogy,"Aug 24, 2009",91
+213.,Overwatch,"May 23, 2016",91
+215.,Baldur's Gate,"Dec 21, 1998",91
+216.,Madden NFL 2001,"Oct 23, 2000",91
+217.,Bayonetta 2,"Oct 24, 2014",91
+218.,Klonoa 2: Lunatea's Veil,"Jul 25, 2001",91
+219.,FreeSpace 2,"Sep 30, 1999",91
+220.,Mario Tennis,"Aug 28, 2000",91
+223.,Ratchet & Clank: Up Your Arsenal,"Nov 3, 2004",91
+224.,Resident Evil (Remake),"Apr 30, 2002",91
+225.,Metal Gear Solid 3: Snake Eater,"Nov 17, 2004",91
+226.,Dragon Quest XI S: Echoes of an Elusive Age - Definitive Edition,"Sep 27, 2019",91
+227.,Twisted Metal: Black,"Jun 18, 2001",91
+228.,Spyro: Year of the Dragon,"Oct 10, 2000",91
+231.,Forza Horizon 3,"Sep 23, 2016",91
+233.,NCAA Football 2003,"Jul 20, 2002",91
+235.,Crysis,"Nov 13, 2007",91
+236.,Ninja Gaiden (2004),"Mar 2, 2004",91
+237.,God of War: Chains of Olympus,"Mar 4, 2008",91
+238.,DOA2: Hardcore,"Oct 25, 2000",91
+239.,World of Warcraft: The Burning Crusade,"Jan 16, 2007",91
+240.,Split Fiction,"Mar 6, 2025",91
+241.,MLB 10: The Show,"Mar 2, 2010",91
+242.,Shadow of the Colossus,"Feb 6, 2018",91
+243.,Yoshi's Island: Super Mario Advance 3,"Sep 24, 2002",91
+244.,The Longest Journey,"Nov 16, 2000",91
+245.,Tony Hawk's Pro Skater 2,"Oct 25, 2000",91
+247.,ESPN NFL Football,"Sep 3, 2003",91
+248.,Halo: Reach,"Sep 14, 2010",91
+249.,Galactic Civilizations II: Dark Avatar,"Feb 14, 2007",91
+250.,Mass Effect,"Nov 20, 2007",91
+251.,The Operative: No One Lives Forever,"Nov 11, 2000",91
+252.,Resident Evil 3: Nemesis,"Nov 11, 1999",91
+253.,Forza Motorsport 4,"Oct 11, 2011",91
+255.,Crusader Kings III,"Sep 1, 2020",91
+256.,Battlefield 2,"Jun 21, 2005",91
+257.,God of War Collection,"Nov 17, 2009",91
+258.,Planescape: Torment,"Dec 14, 1999",91
+259.,Gears of War 3,"Sep 20, 2011",91
+260.,Killzone 2,"Feb 27, 2009",91
+261.,Neverwinter Nights,"Jun 16, 2002",91
+262.,No One Lives Forever 2: A Spy in H.A.R.M.'s Way,"Sep 30, 2002",91
+263.,Castlevania: Aria of Sorrow,"May 6, 2003",91
+264.,Legacy of Kain: Soul Reaver,"Aug 13, 1999",91
+265.,Golden Sun,"Nov 11, 2001",91
+266.,Disco Elysium,"Oct 15, 2019",91
+267.,World Soccer Winning Eleven 8 International,"Feb 1, 2005",91
+268.,The Legend of Zelda: A Link Between Worlds,"Nov 22, 2013",91
+270.,Castlevania: Circle of the Moon,"Jun 10, 2001",91
+272.,Resident Evil 2,"Jan 25, 2019",91
+273.,Satisfactory,"Sep 10, 2024",91
+274.,Dark Souls II,"Mar 11, 2014",91
+275.,Shovel Knight: Treasure Trove,"Mar 3, 2017",91
+277.,Mario Kart DS,"Nov 14, 2005",91
+279.,Call of Duty,"Oct 29, 2003",91
+280.,Assassin's Creed II,"Nov 17, 2009",90
+281.,Animal Well,"May 9, 2024",90
+282.,Balatro,"Feb 20, 2024",90
+283.,Project Gotham Racing 2,"Nov 18, 2003",90
+284.,Animal Crossing: New Horizons,"Mar 20, 2020",90
+285.,The Sims 2,"Sep 14, 2004",90
+286.,Final Fantasy XIV: Shadowbringers,"Jul 2, 2019",90
+287.,World of Warcraft: Cataclysm,"Dec 7, 2010",90
+288.,Bayonetta,"Jan 5, 2010",90
+289.,Diablo III: Ultimate Evil Edition,"Aug 19, 2014",90
+290.,ICO,"Sep 24, 2001",90
+291.,Tom Clancy's Ghost Recon Advanced Warfighter,"Mar 9, 2006",90
+292.,World of Goo,"Oct 12, 2008",90
+293.,Mario & Luigi: Superstar Saga,"Nov 17, 2003",90
+294.,Slay the Princess,"Oct 23, 2023",90
+295.,Tony Hawk's Underground,"Oct 27, 2003",90
+296.,Syphon Filter,"Feb 17, 1999",90
+297.,Ape Escape,"Jun 23, 1999",90
+298.,Mario & Luigi: Bowser's Inside Story,"Sep 14, 2009",90
+299.,Trials Evolution,"Apr 18, 2012",90
+300.,Grand Theft Auto IV: The Lost and Damned,"Feb 17, 2009",90
+301.,FIFA Soccer 12,"Sep 27, 2011",90
+303.,Ratchet & Clank: Going Commando,"Nov 11, 2003",90
+304.,FIFA Soccer 10,"Oct 20, 2009",90
+305.,NBA Street Vol. 2,"Apr 28, 2003",90
+306.,Black & White,"Mar 26, 2001",90
+307.,Marvel's Spider-Man 2,"Oct 20, 2023",90
+308.,The Legend of Zelda: The Wind Waker HD,"Sep 20, 2013",90
+309.,Portal,"Oct 10, 2007",90
+310.,The Legend of Zelda: Phantom Hourglass,"Oct 1, 2007",90
+313.,NHL 2001,"Sep 28, 2000",90
+314.,Advance Wars: Dual Strike,"Aug 22, 2005",90
+315.,MLB 11: The Show,"Mar 8, 2011",90
+316.,NieR: Automata - Become as Gods Edition,"Jun 26, 2018",90
+317.,Jak and Daxter: The Precursor Legacy,"Dec 4, 2001",90
+318.,Star Wars Rogue Leader: Rogue Squadron II,"Nov 18, 2001",90
+321.,NCAA Football 2002,"Jul 23, 2001",90
+322.,Deus Ex,"Jun 23, 2000",90
+324.,Panzer Dragoon Orta,"Jan 12, 2003",90
+325.,Portal: Still Alive,"Oct 22, 2008",90
+326.,Half-Life 2: Episode Two,"Oct 10, 2007",90
+327.,Shin Megami Tensei: Persona 4,"Dec 9, 2008",90
+328.,Hollow Knight,"Jun 12, 2018",90
+329.,MLB 09: The Show,"Mar 3, 2009",90
+331.,Ori and the Will of the Wisps,"Mar 11, 2020",90
+332.,MVP Baseball 2004,"Mar 9, 2004",90
+334.,WWF SmackDown! 2: Know Your Role,"Nov 20, 2000",90
+335.,Sid Meier's Civilization III,"Oct 30, 2001",90
+336.,The Last of Us Part II Remastered,"Jan 19, 2024",90
+337.,LIMBO,"Jul 21, 2010",90
+338.,Mark of the Ninja,"Sep 7, 2012",90
+339.,Silent Hunter III,"Mar 15, 2005",90
+340.,Chained Echoes,"Dec 8, 2022",90
+341.,Super Meat Boy,"Oct 20, 2010",90
+342.,Dead Space 2,"Jan 25, 2011",90
+343.,Pikmin 2,"Aug 30, 2004",90
+344.,DAVE THE DIVER,"Jun 28, 2023",90
+345.,Okami HD,"Oct 30, 2012",90
+346.,Geometry Wars: Retro Evolved 2,"Jul 30, 2008",90
+347.,Sid Meier's Civilization V,"Sep 21, 2010",90
+348.,Super Mario 3D Land,"Nov 13, 2011",90
+351.,The Stanley Parable: Ultra Deluxe,"Apr 27, 2022",90
+352.,Metroid Prime 3: Corruption,"Aug 27, 2007",90
+353.,Monster Hunter: World,"Jan 26, 2018",90
+355.,Dota 2,"Jul 9, 2013",90
+356.,TimeSplitters 2,"Oct 8, 2002",90
+357.,Guild Wars 2,"Aug 28, 2012",90
+358.,Forza Motorsport 2,"May 29, 2007",90
+359.,Pushmo,"Dec 8, 2011",90
+360.,Freedom Force,"Mar 24, 2002",90
+361.,FIFA Soccer 13,"Sep 25, 2012",90
+362.,Into the Breach,"Feb 27, 2018",90
+363.,Sekiro: Shadows Die Twice,"Mar 22, 2019",90
+364.,Chicory: A Colorful Tale,"Jun 10, 2021",90
+365.,Tekken 8,"Jan 26, 2024",90
+366.,GTR 2,"Sep 29, 2006",90
+367.,Total War: Shogun 2,"Mar 15, 2011",90
+368.,Empire: Total War,"Mar 3, 2009",90
+369.,Astro Bot Rescue Mission,"Oct 2, 2018",90
+370.,NBA 2K12,"Oct 4, 2011",90
+373.,Final Fantasy VIII,"Sep 7, 1999",90
+375.,Bayonetta + Bayonetta 2,"Feb 16, 2018",90
