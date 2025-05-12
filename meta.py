@@ -30,8 +30,8 @@ print(df.sort_values("release_date").iloc[0])
 print("\n📌 Newest must-play game:")
 print(df.sort_values("release_date", ascending=False).iloc[0])
 
-recent_games = df[df["year"] > 2020]
+recent_games = df[df["year"] >= 2020]
 
-print("\n🆕 Must-play games released after 2020:")
+print(f"\n🆕 Must-play games released after 2020: {len(recent_games)}")
 for _, row in recent_games.iterrows():
     print(f"{row['title']} ({row['release_date'].strftime('%Y-%m-%d')}) - Metascore: {row['metascore']}")
