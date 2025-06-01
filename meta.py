@@ -35,3 +35,18 @@ recent_games = df[df["year"] >= 2020]
 print(f"\n🆕 Must-play games released after 2020: {len(recent_games)}")
 for _, row in recent_games.iterrows():
     print(f"{row['title']} ({row['release_date'].strftime('%Y-%m-%d')}) - Metascore: {row['metascore']}")
+
+games_per_year = recent_games["year"].value_counts().sort_index()
+
+print("\n📅 By year (with average Metascore):")
+for year in sorted(recent_games["year"].unique()):
+    games_in_year = recent_games[recent_games["year"] == year]
+    count = len(games_in_year)
+    avg_metascore = games_in_year["metascore"].mean()
+    print(f"{year} = {count} games | Avg Metascore: {avg_metascore:.1f}")
+
+print("\n🎮 Games by year:")
+for year in sorted(recent_games["year"].unique()):
+    games_in_year = recent_games[recent_games["year"] == year]
+    titles = ", ".join(games_in_year["title"])
+    print(f"{year} = {titles}")
