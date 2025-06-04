@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
 import csv
 import random
 import time
@@ -12,6 +13,7 @@ from typing import Iterable, List, Optional
 
 import requests
 from bs4 import BeautifulSoup
+import aiohttp
 
 
 HEADERS = {"User-Agent": "Mozilla/5.0"}
@@ -35,6 +37,18 @@ def fetch_page(url: str, *, timeout: int = 10) -> Optional[str]:
             return resp.text
         print(f"⚠️ Request for {url} returned status {resp.status_code}.")
     except requests.RequestException as exc:
+        print(f"⚠️ Request for {url} failed: {exc}")
+    return None
+
+
+async def fetch_page_async(session: aiohttp.ClientSession, url: str, *, timeout: int = 10) -> Optional[str]:
+    """Asynchronously return page HTML if the request succeeds."""
+    try:
+        async with session.get(url, timeout=timeout) as resp:
+            if resp.status == 200:
+                return await resp.text()
+            print(f"⚠️ Request for {url} returned status {resp.status}.")
+    except aiohttp.ClientError as exc:
         print(f"⚠️ Request for {url} failed: {exc}")
     return None
 
@@ -109,6 +123,43 @@ def scrape_games(start: int, end: int, *, delay: float = 1.0) -> List[Game]:
     return all_games
 
 
+async def scrape_games_async(
+    start: int,
+    end: int,
+    *,
+    delay: float = 1.0,
+    concurrency: int = 5,
+) -> List[Game]:
+    """Asynchronously scrape games between ``start`` and ``end`` pages."""
+    print("🔎 Starting scraping Metacritic must-play games...\n")
+    connector = aiohttp.TCPConnector(limit=concurrency)
+    async with aiohttp.ClientSession(headers=HEADERS, connector=connector) as session:
+        tasks = []
+        for page in range(start, end + 1):
+            url = (
+                "https://www.metacritic.com/browse/game/?releaseYearMin=1958"
+                f"&releaseYearMax=2025&page={page}"
+            )
+            tasks.append(fetch_page_async(session, url))
+            await asyncio.sleep(random.uniform(delay, delay + 1))
+
+        pages = await asyncio.gather(*tasks)
+
+    all_games: List[Game] = []
+    for html in pages:
+        if html is None:
+            print("⚠️ Skipping page due to request failure.")
+            continue
+        games = parse_games(html)
+        if not games:
+            print("⚠️ No game cards found. Stopping.")
+            break
+        all_games.extend(games)
+
+    print("\n✅ Scraping completed.\n")
+    return all_games
+
+
 def save_csv(games: Iterable[Game], filename: str) -> None:
     """Write scraped games to ``filename``."""
     with open(filename, "w", newline="", encoding="utf-8") as csv_file:
@@ -157,12 +208,28 @@ def parse_args() -> argparse.Namespace:
         default=1.0,
         help="Base delay between requests in seconds.",
     )
+    parser.add_argument(
+        "--concurrency",
+        type=int,
+        default=1,
+        help="Number of concurrent requests (1 = sequential).",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    games = scrape_games(args.start, args.end, delay=args.delay)
+    if args.concurrency > 1:
+        games = asyncio.run(
+            scrape_games_async(
+                args.start,
+                args.end,
+                delay=args.delay,
+                concurrency=args.concurrency,
+            )
+        )
+    else:
+        games = scrape_games(args.start, args.end, delay=args.delay)
     save_csv(games, args.output)
     print(f"📁 CSV file saved: {args.output}")
 

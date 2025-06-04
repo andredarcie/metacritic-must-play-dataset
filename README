@@ -4,6 +4,26 @@ The Metacritic "Must-Play" badge is automatically given to games that achieve a 
 of 90 or higher based on at least 15 professional critic reviews, signaling that the game 
 is universally acclaimed and considered one of the best on its platform.
 
+## Usage
+
+Install the required packages:
+
+```bash
+pip install requests bs4 pandas aiohttp
+```
+
+Run the scraper sequentially:
+
+```bash
+python main.py --start 1 --end 16
+```
+
+Use multiple concurrent requests (asyncio + aiohttp):
+
+```bash
+python main.py --concurrency 5
+```
+
 Importance:
 Nintendo: Promoted Breath of the Wild as having “more perfect scores than any game in Metacritic history.”
 Sony: Aims for 90+ Metacritic scores on major titles, as noted by ex-art director Rafael Grassetti.
