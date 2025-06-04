@@ -24,6 +24,9 @@ Use multiple concurrent requests (asyncio + aiohttp):
 python main.py --concurrency 5
 ```
 
+The generated CSV now includes a `critic_reviews` column with the number of
+professional critic reviews scraped from each game's page.
+
 Importance:
 Nintendo: Promoted Breath of the Wild as having “more perfect scores than any game in Metacritic history.”
 Sony: Aims for 90+ Metacritic scores on major titles, as noted by ex-art director Rafael Grassetti.
