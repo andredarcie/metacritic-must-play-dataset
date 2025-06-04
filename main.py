@@ -44,25 +44,33 @@ def sort_games_by_rank(games: Iterable[Game]) -> List[Game]:
 
 def fetch_page(url: str, *, timeout: int = 10) -> Optional[str]:
     """Return page HTML if the request succeeds, otherwise ``None``."""
+    start = time.time()
     try:
         resp = requests.get(url, headers=HEADERS, timeout=timeout)
+        elapsed = time.time() - start
         if resp.status_code == 200:
+            print(f"⬇️ Fetched {url} in {elapsed:.2f}s")
             return resp.text
-        print(f"⚠️ Request for {url} returned status {resp.status_code}.")
+        print(f"⚠️ Request for {url} returned status {resp.status_code} after {elapsed:.2f}s")
     except requests.RequestException as exc:
-        print(f"⚠️ Request for {url} failed: {exc}")
+        elapsed = time.time() - start
+        print(f"⚠️ Request for {url} failed after {elapsed:.2f}s: {exc}")
     return None
 
 
 async def fetch_page_async(session: aiohttp.ClientSession, url: str, *, timeout: int = 10) -> Optional[str]:
     """Asynchronously return page HTML if the request succeeds."""
+    start = time.time()
     try:
         async with session.get(url, timeout=timeout) as resp:
+            elapsed = time.time() - start
             if resp.status == 200:
+                print(f"⬇️ Fetched {url} in {elapsed:.2f}s")
                 return await resp.text()
-            print(f"⚠️ Request for {url} returned status {resp.status}.")
+            print(f"⚠️ Request for {url} returned status {resp.status} after {elapsed:.2f}s")
     except aiohttp.ClientError as exc:
-        print(f"⚠️ Request for {url} failed: {exc}")
+        elapsed = time.time() - start
+        print(f"⚠️ Request for {url} failed after {elapsed:.2f}s: {exc}")
     return None
 
 
@@ -124,9 +132,17 @@ def fetch_critic_reviews(game: Game, *, delay: float = 1.0) -> None:
     """Populate ``game.critic_reviews`` by scraping its page."""
     if not game.url:
         return
+    print(f"🔎 Fetching critic reviews from {game.url}...")
+    start = time.time()
     html = fetch_page(game.url)
+    elapsed = time.time() - start
     if html:
         game.critic_reviews = parse_critic_reviews(html)
+        print(
+            f"✅ {game.critic_reviews if game.critic_reviews is not None else 'No'} reviews found in {elapsed:.2f}s"
+        )
+    else:
+        print(f"⚠️ Failed to fetch page in {elapsed:.2f}s")
     time.sleep(random.uniform(delay, delay + 1))
 
 
@@ -136,9 +152,17 @@ async def fetch_critic_reviews_async(
     """Asynchronously populate ``game.critic_reviews`` from its page."""
     if not game.url:
         return
+    print(f"🔎 Fetching critic reviews from {game.url}...")
+    start = time.time()
     html = await fetch_page_async(session, game.url)
+    elapsed = time.time() - start
     if html:
         game.critic_reviews = parse_critic_reviews(html)
+        print(
+            f"✅ {game.critic_reviews if game.critic_reviews is not None else 'No'} reviews found in {elapsed:.2f}s"
+        )
+    else:
+        print(f"⚠️ Failed to fetch page in {elapsed:.2f}s")
     await asyncio.sleep(random.uniform(delay, delay + 1))
 
 
