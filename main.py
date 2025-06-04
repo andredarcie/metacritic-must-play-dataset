@@ -1,58 +1,171 @@
-from bs4 import BeautifulSoup
-import requests
-import time
+"""Scrape Metacritic must-play games and save them to CSV."""
+
+from __future__ import annotations
+
+import argparse
 import csv
+import random
+import time
+from dataclasses import dataclass
 from datetime import datetime
+from typing import Iterable, List, Optional
 
-headers = {
-    "User-Agent": "Mozilla/5.0"
-}
+import requests
+from bs4 import BeautifulSoup
 
-all_games = []
 
-print("🔎 Starting scraping Metacritic must-play games...\n")
+HEADERS = {"User-Agent": "Mozilla/5.0"}
 
-for page in range(1, 17):
-    print(f"🔎 Accessing page {page}...")
-    url = f"https://www.metacritic.com/browse/game/?releaseYearMin=1958&releaseYearMax=2025&page={page}"
-    response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.text, "html.parser")
+
+@dataclass
+class Game:
+    """Representation of a must-play game scraped from Metacritic."""
+
+    rank: Optional[str]
+    title: Optional[str]
+    release_date: Optional[datetime]
+    metascore: Optional[int]
+
+
+def fetch_page(url: str, *, timeout: int = 10) -> Optional[str]:
+    """Return page HTML if the request succeeds, otherwise ``None``."""
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=timeout)
+        if resp.status_code == 200:
+            return resp.text
+        print(f"⚠️ Request for {url} returned status {resp.status_code}.")
+    except requests.RequestException as exc:
+        print(f"⚠️ Request for {url} failed: {exc}")
+    return None
+
+
+def parse_games(html: str) -> List[Game]:
+    """Extract must-play games from HTML and return them as ``Game`` objects."""
+    soup = BeautifulSoup(html, "html.parser")
     cards = soup.select("a.c-finderProductCard_container")
 
-    if not cards:
-        print("⚠️ No game cards found. Stopping.")
-        break
-
+    games: List[Game] = []
     for card in cards:
-        title_elem = card.select_one(".c-finderProductCard_titleHeading span:nth-of-type(2)")
-        rank_elem = card.select_one(".c-finderProductCard_titleHeading span:nth-of-type(1)")
-        date_elem = card.select_one(".c-finderProductCard_meta span:nth-of-type(1)")
+        if card.select_one('img[alt="must-play"]') is None:
+            continue
+
+        title_elem = card.select_one(
+            ".c-finderProductCard_titleHeading span:nth-of-type(2)"
+        )
+        rank_elem = card.select_one(
+            ".c-finderProductCard_titleHeading span:nth-of-type(1)"
+        )
+        date_elem = card.select_one(
+            ".c-finderProductCard_meta span:nth-of-type(1)"
+        )
         metascore_elem = card.select_one(".c-siteReviewScore span")
-        mustplay_elem = card.select_one('img[alt="must-play"]')
 
-        if mustplay_elem is None:
-            continue  # skip if not must-play
+        date: Optional[datetime] = None
+        if date_elem and date_elem.text.strip():
+            try:
+                date = datetime.strptime(date_elem.text.strip(), "%b %d, %Y")
+            except ValueError:
+                pass
 
-        game = {
-            "rank": rank_elem.text.strip() if rank_elem else None,
-            "title": title_elem.text.strip() if title_elem else None,
-            "release_date": date_elem.text.strip() if date_elem else None,
-            "metascore": int(metascore_elem.text.strip()) if metascore_elem else None
-        }
+        game = Game(
+            rank=rank_elem.text.strip() if rank_elem else None,
+            title=title_elem.text.strip() if title_elem else None,
+            release_date=date,
+            metascore=int(metascore_elem.text.strip()) if metascore_elem else None,
+        )
+        games.append(game)
 
-        all_games.append(game)
+    return games
 
-    time.sleep(1)  # avoid IP block
 
-print("\n✅ Scraping completed.\n")
+def scrape_games(start: int, end: int, *, delay: float = 1.0) -> List[Game]:
+    """Scrape games between ``start`` and ``end`` pages inclusive."""
+    print("🔎 Starting scraping Metacritic must-play games...\n")
+    all_games: List[Game] = []
 
-# Save to CSV with today's date in filename
-today_str = datetime.today().strftime("%Y-%m-%d")
-csv_filename = f"metacritic_must_play_games_{today_str}.csv"
+    for page in range(start, end + 1):
+        print(f"🔎 Accessing page {page}...")
+        url = (
+            "https://www.metacritic.com/browse/game/?releaseYearMin=1958"
+            f"&releaseYearMax=2025&page={page}"
+        )
 
-with open(csv_filename, mode='w', newline='', encoding='utf-8') as csv_file:
-    writer = csv.DictWriter(csv_file, fieldnames=["rank", "title", "release_date", "metascore"])
-    writer.writeheader()
-    writer.writerows(all_games)
+        html = fetch_page(url)
+        if html is None:
+            print("⚠️ Skipping page due to request failure.")
+            continue
 
-print(f"📁 CSV file saved: {csv_filename}")
+        games = parse_games(html)
+        if not games:
+            print("⚠️ No game cards found. Stopping.")
+            break
+
+        all_games.extend(games)
+
+        wait = random.uniform(delay, delay + 1)
+        time.sleep(wait)
+
+    print("\n✅ Scraping completed.\n")
+    return all_games
+
+
+def save_csv(games: Iterable[Game], filename: str) -> None:
+    """Write scraped games to ``filename``."""
+    with open(filename, "w", newline="", encoding="utf-8") as csv_file:
+        writer = csv.DictWriter(
+            csv_file,
+            fieldnames=["rank", "title", "release_date", "metascore"],
+        )
+        writer.writeheader()
+        for game in games:
+            writer.writerow(
+                {
+                    "rank": game.rank,
+                    "title": game.title,
+                    "release_date": game.release_date.strftime("%Y-%m-%d")
+                    if game.release_date
+                    else None,
+                    "metascore": game.metascore,
+                }
+            )
+
+
+def parse_args() -> argparse.Namespace:
+    """Return parsed command line arguments."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--start",
+        type=int,
+        default=1,
+        help="First page to scrape (inclusive).",
+    )
+    parser.add_argument(
+        "--end",
+        type=int,
+        default=16,
+        help="Last page to scrape (inclusive).",
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default=datetime.today().strftime("metacritic_must_play_games_%Y-%m-%d.csv"),
+        help="Output CSV filename.",
+    )
+    parser.add_argument(
+        "--delay",
+        type=float,
+        default=1.0,
+        help="Base delay between requests in seconds.",
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    games = scrape_games(args.start, args.end, delay=args.delay)
+    save_csv(games, args.output)
+    print(f"📁 CSV file saved: {args.output}")
+
+
+if __name__ == "__main__":
+    main()
