@@ -10,6 +10,7 @@ import time
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Iterable, List, Optional
+import re
 
 import requests
 from bs4 import BeautifulSoup
@@ -27,6 +28,8 @@ class Game:
     title: Optional[str]
     release_date: Optional[datetime]
     metascore: Optional[int]
+    url: Optional[str] = None
+    critic_reviews: Optional[int] = None
 
 
 def sort_games_by_rank(games: Iterable[Game]) -> List[Game]:
@@ -83,6 +86,9 @@ def parse_games(html: str) -> List[Game]:
             ".c-finderProductCard_meta span:nth-of-type(1)"
         )
         metascore_elem = card.select_one(".c-siteReviewScore span")
+        url = card.get("href")
+        if url and url.startswith("/"):
+            url = "https://www.metacritic.com" + url
 
         date: Optional[datetime] = None
         if date_elem and date_elem.text.strip():
@@ -96,10 +102,60 @@ def parse_games(html: str) -> List[Game]:
             title=title_elem.text.strip() if title_elem else None,
             release_date=date,
             metascore=int(metascore_elem.text.strip()) if metascore_elem else None,
+            url=url,
         )
         games.append(game)
 
     return games
+
+
+def parse_critic_reviews(html: str) -> Optional[int]:
+    """Return critic review count parsed from a game page."""
+    soup = BeautifulSoup(html, "html.parser")
+    elem = soup.select_one('a[data-testid="critic-path"] span')
+    if elem:
+        match = re.search(r"(\d+)\s+Critic", elem.get_text(strip=True))
+        if match:
+            return int(match.group(1))
+    return None
+
+
+def fetch_critic_reviews(game: Game, *, delay: float = 1.0) -> None:
+    """Populate ``game.critic_reviews`` by scraping its page."""
+    if not game.url:
+        return
+    html = fetch_page(game.url)
+    if html:
+        game.critic_reviews = parse_critic_reviews(html)
+    time.sleep(random.uniform(delay, delay + 1))
+
+
+async def fetch_critic_reviews_async(
+    session: aiohttp.ClientSession, game: Game, *, delay: float = 1.0
+) -> None:
+    """Asynchronously populate ``game.critic_reviews`` from its page."""
+    if not game.url:
+        return
+    html = await fetch_page_async(session, game.url)
+    if html:
+        game.critic_reviews = parse_critic_reviews(html)
+    await asyncio.sleep(random.uniform(delay, delay + 1))
+
+
+def fetch_reviews_for_games(games: Iterable[Game], *, delay: float = 1.0) -> None:
+    """Sequentially populate critic reviews for each game."""
+    for game in games:
+        fetch_critic_reviews(game, delay=delay)
+
+
+async def fetch_reviews_for_games_async(
+    games: Iterable[Game], *, delay: float = 1.0, concurrency: int = 5
+) -> None:
+    """Asynchronously populate critic reviews for each game."""
+    connector = aiohttp.TCPConnector(limit=concurrency)
+    async with aiohttp.ClientSession(headers=HEADERS, connector=connector) as session:
+        tasks = [fetch_critic_reviews_async(session, game, delay=delay) for game in games]
+        await asyncio.gather(*tasks)
 
 
 def scrape_games(start: int, end: int, *, delay: float = 1.0) -> List[Game]:
@@ -175,7 +231,13 @@ def save_csv(games: Iterable[Game], filename: str) -> None:
     with open(filename, "w", newline="", encoding="utf-8") as csv_file:
         writer = csv.DictWriter(
             csv_file,
-            fieldnames=["rank", "title", "release_date", "metascore"],
+            fieldnames=[
+                "rank",
+                "title",
+                "release_date",
+                "metascore",
+                "critic_reviews",
+            ],
         )
         writer.writeheader()
         for game in games:
@@ -187,6 +249,7 @@ def save_csv(games: Iterable[Game], filename: str) -> None:
                     if game.release_date
                     else None,
                     "metascore": game.metascore,
+                    "critic_reviews": game.critic_reviews,
                 }
             )
 
@@ -240,6 +303,15 @@ def main() -> None:
         )
     else:
         games = scrape_games(args.start, args.end, delay=args.delay)
+
+    if args.concurrency > 1:
+        asyncio.run(
+            fetch_reviews_for_games_async(
+                games, delay=args.delay, concurrency=args.concurrency
+            )
+        )
+    else:
+        fetch_reviews_for_games(games, delay=args.delay)
 
     games = sort_games_by_rank(games)
     save_csv(games, args.output)
