@@ -29,6 +29,16 @@ class Game:
     metascore: Optional[int]
 
 
+def sort_games_by_rank(games: Iterable[Game]) -> List[Game]:
+    """Return games ordered numerically by their rank."""
+    def rank_key(game: Game) -> int:
+        if game.rank and game.rank.rstrip('.').isdigit():
+            return int(game.rank.rstrip('.'))
+        return 0
+
+    return sorted(games, key=rank_key)
+
+
 def fetch_page(url: str, *, timeout: int = 10) -> Optional[str]:
     """Return page HTML if the request succeeds, otherwise ``None``."""
     try:
@@ -230,6 +240,8 @@ def main() -> None:
         )
     else:
         games = scrape_games(args.start, args.end, delay=args.delay)
+
+    games = sort_games_by_rank(games)
     save_csv(games, args.output)
     print(f"📁 CSV file saved: {args.output}")
 
