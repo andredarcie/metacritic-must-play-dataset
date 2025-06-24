@@ -1,9 +1,14 @@
-"""Analyze a Metacritic must-play CSV file."""
+"""Analyze the latest Metacritic CSV and inject stats into README.md.
+
+Usage
+-----
+python meta.py                 # uses most recent *.csv in the folder
+python meta.py path/to/file.csv
+"""
 
 from __future__ import annotations
 
 import argparse
-import glob
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -12,12 +17,14 @@ from typing import Optional
 import pandas as pd
 
 
-def find_latest_csv(pattern: str = "metacritic_must_play_games_*.csv") -> Optional[str]:
-    """Return the newest CSV filename matching ``pattern`` or ``None``."""
-    files = sorted(Path(".").glob(pattern))
-    return str(files[-1]) if files else None
+# ───────────────────────── CSV discovery ─────────────────────────
+def find_latest_csv() -> Optional[str]:
+    """Return the most recently modified *.csv file in the current folder."""
+    csv_files = [p for p in Path(".").glob("*.csv") if p.is_file()]
+    return str(max(csv_files, key=lambda p: p.stat().st_mtime)) if csv_files else None
 
 
+# ───────────────────────── data classes ──────────────────────────
 @dataclass
 class Stats:
     total: int
@@ -29,9 +36,9 @@ class Stats:
     recent: pd.DataFrame
 
 
+# ───────────────────────── data pipeline ─────────────────────────
 def load_data(csv_file: str) -> pd.DataFrame:
-    """Load the CSV and return a cleaned ``DataFrame``."""
-    df = pd.read_csv(csv_file, quotechar='"')
+    df = pd.read_csv(csv_file)
     df["release_date"] = pd.to_datetime(df["release_date"], errors="coerce")
     df["year"] = df["release_date"].dt.year
     df["decade"] = (df["year"] // 10) * 10
@@ -39,84 +46,121 @@ def load_data(csv_file: str) -> pd.DataFrame:
 
 
 def compute_stats(df: pd.DataFrame) -> Stats:
-    """Compute statistics used in the report."""
-    by_decade = df["decade"].value_counts().sort_index()
-    by_year = df["year"].value_counts().head(5).sort_values(ascending=False)
-    score_distribution = df["metascore"].value_counts().sort_index()
-    oldest = df.sort_values("release_date").iloc[0]
-    newest = df.sort_values("release_date", ascending=False).iloc[0]
-    recent = df[df["year"] >= 2020]
     return Stats(
         total=len(df),
-        by_decade=by_decade,
-        by_year=by_year,
-        score_distribution=score_distribution,
-        oldest=oldest,
-        newest=newest,
-        recent=recent,
+        by_decade=df["decade"].value_counts().sort_index(),
+        by_year=df["year"].value_counts().head(5).sort_values(ascending=False),
+        score_distribution=df["metascore"].value_counts().sort_index(),
+        oldest=df.sort_values("release_date").iloc[0],
+        newest=df.sort_values("release_date", ascending=False).iloc[0],
+        recent=df[df["year"] >= 2020],
     )
 
 
-def print_report(stats: Stats) -> None:
-    """Display a formatted report on the console."""
-    print(f"\n🎮 Total must-play games: {stats.total}")
-
-    print("\n📊 Games by decade:")
-    print(stats.by_decade)
-
-    print("\n📅 Top 5 years with most must-play games:")
-    print(stats.by_year)
-
-    print("\n🏆 Metascore distribution:")
-    print(stats.score_distribution)
-
-    print("\n📌 Oldest must-play game:")
-    print(stats.oldest)
-
-    print("\n📌 Newest must-play game:")
-    print(stats.newest)
-
-    recent_games = stats.recent
-    print(f"\n🆕 Must-play games released after 2020: {len(recent_games)}")
-    for _, row in recent_games.iterrows():
-        date_str = row["release_date"].strftime("%Y-%m-%d") if pd.notnull(row["release_date"]) else ""  
-        print(f"{row['title']} ({date_str}) - Metascore: {row['metascore']}")
-
-    print("\n📅 By year (with average Metascore):")
-    for year in sorted(recent_games["year"].unique()):
-        games_in_year = recent_games[recent_games["year"] == year]
-        count = len(games_in_year)
-        avg = games_in_year["metascore"].mean()
-        print(f"{year} = {count} games | Avg Metascore: {avg:.1f}")
-
-    print("\n🎮 Games by year:")
-    for year in sorted(recent_games["year"].unique()):
-        games_in_year = recent_games[recent_games["year"] == year]
-        titles = ", ".join(games_in_year["title"])
-        print(f"{year} = {titles}")
+# ─────────────────────── markdown helpers ───────────────────────
+def series_to_md(series: pd.Series) -> str:
+    return "\n".join(f"{idx}: {val}" for idx, val in series.items())
 
 
+def games_list_md(df: pd.DataFrame) -> str:
+    lines: list[str] = []
+    grouped = df.sort_values("release_date").groupby("year")
+
+    for year, group in grouped:
+        lines.append(f"#### {year}")
+        for _, row in group.iterrows():
+            date = (
+                row["release_date"].strftime("%Y-%m-%d")
+                if pd.notnull(row["release_date"])
+                else "??"
+            )
+            lines.append(f"- **{row['title']}** ({date}) — Metascore: {row['metascore']}")
+        lines.append("")  # linha em branco entre anos
+
+    return "\n".join(lines)
+
+
+def build_stats_block(stats: Stats) -> str:
+    return "\n".join(
+        [
+            "<!-- STATS_START -->",
+            f"🎮 **Total must-play games:** {stats.total}",
+            "",
+            "### Games by decade",
+            series_to_md(stats.by_decade),
+            "",
+            "### Top 5 years (most must-plays)",
+            series_to_md(stats.by_year),
+            "",
+            "### Metascore distribution",
+            series_to_md(stats.score_distribution),
+            "",
+            "### Oldest must-play game",
+            f"- {stats.oldest['title']} ({stats.oldest['release_date'].date()}) "
+            f"— Metascore {stats.oldest['metascore']}",
+            "",
+            "### Newest must-play game",
+            f"- {stats.newest['title']} ({stats.newest['release_date'].date()}) "
+            f"— Metascore {stats.newest['metascore']}",
+            "",
+            f"### Must-plays released 2020+ ({len(stats.recent)})",
+            games_list_md(stats.recent),
+            "<!-- STATS_END -->",
+            "",
+        ]
+    )
+
+
+# ─────────────────────── README handling ────────────────────────
+def find_readme(base: Path) -> Path:
+    """Return first README*.md (case-insensitive) or default README.md path."""
+    for p in base.iterdir():
+        if p.is_file() and p.name.lower().startswith("readme") and p.suffix.lower() == ".md":
+            return p
+    return base / "README.md"
+
+
+def update_readme(block: str, project_root: Path = Path.cwd()) -> None:
+    readme_path = find_readme(project_root)
+
+    if readme_path.exists():
+        text = readme_path.read_text(encoding="utf-8")
+    else:
+        print("ℹ️  README inexistente — criando um novo.")
+        text = "# Metacritic Must-play dataset\n\n"
+
+    if "<!-- STATS_START -->" in text and "<!-- STATS_END -->" in text:
+        before, _start, rest = text.partition("<!-- STATS_START -->")
+        _old, _end, after = rest.partition("<!-- STATS_END -->")
+        new_text = before + block + after
+    else:
+        new_text = text.rstrip() + "\n\n" + block
+
+    readme_path.write_text(new_text, encoding="utf-8")
+    print(f"✅ README atualizado: {readme_path}")
+
+
+# ───────────────────────────── CLI ──────────────────────────────
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "csv",
-        nargs="?",
-        default=None,
-        help="CSV file to analyze (latest by default)",
-    )
-    return parser.parse_args()
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("csv", nargs="?", default=None, help="CSV a analisar (opcional).")
+    return p.parse_args()
 
 
 def main() -> None:
     args = parse_args()
     csv_file = args.csv or find_latest_csv()
     if not csv_file:
-        raise SystemExit("No CSV files found to analyze.")
+        raise SystemExit("Nenhum arquivo .csv encontrado para análise.")
 
-    print(f"Analyzing {csv_file}...")
+    print(f"📊 Analisando {csv_file} …")
     df = load_data(csv_file)
     stats = compute_stats(df)
-    print_report(stats)
+
+    block = build_stats_block(stats)
+    update_readme(block)
+
+    print("🏁 Fim.")
 
 
 if __name__ == "__main__":

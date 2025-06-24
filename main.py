@@ -1,105 +1,73 @@
-"""Scrape Metacritic must-play games and save them to CSV."""
+"""Scrape Metacritic must-play games (listagem apenas) — agora com log detalhado."""
 
 from __future__ import annotations
 
 import argparse
-import asyncio
 import csv
 import random
 import time
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Iterable, List, Optional
-import re
 
 import requests
 from bs4 import BeautifulSoup
-import aiohttp
-
 
 HEADERS = {"User-Agent": "Mozilla/5.0"}
 
 
 @dataclass
 class Game:
-    """Representation of a must-play game scraped from Metacritic."""
-
     rank: Optional[str]
     title: Optional[str]
     release_date: Optional[datetime]
     metascore: Optional[int]
     url: Optional[str] = None
-    critic_reviews: Optional[int] = None
 
 
-def sort_games_by_rank(games: Iterable[Game]) -> List[Game]:
-    """Return games ordered numerically by their rank."""
-    def rank_key(game: Game) -> int:
-        if game.rank and game.rank.rstrip('.').isdigit():
-            return int(game.rank.rstrip('.'))
-        return 0
-
-    return sorted(games, key=rank_key)
+def sort_games_by_rank(games: Iterable["Game"]) -> List["Game"]:
+    return sorted(
+        games,
+        key=lambda g: int(g.rank.rstrip(".")) if g.rank and g.rank.rstrip(".").isdigit() else 0,
+    )
 
 
-def fetch_page(url: str, *, timeout: int = 10) -> Optional[str]:
-    """Return page HTML if the request succeeds, otherwise ``None``."""
+def fetch_page(url: str, timeout: int = 10) -> Optional[str]:
+    """Baixa página e apresenta log de tempo e tamanho."""
     start = time.time()
     try:
         resp = requests.get(url, headers=HEADERS, timeout=timeout)
         elapsed = time.time() - start
+        kb = len(resp.content) / 1024
         if resp.status_code == 200:
-            print(f"⬇️ Fetched {url} in {elapsed:.2f}s")
+            print(f"⬇️  {url} — OK {elapsed:.2f}s • {kb:.1f} KB")
             return resp.text
-        print(f"⚠️ Request for {url} returned status {resp.status_code} after {elapsed:.2f}s")
+        print(f"⚠️  {url} — HTTP {resp.status_code} {elapsed:.2f}s")
     except requests.RequestException as exc:
-        elapsed = time.time() - start
-        print(f"⚠️ Request for {url} failed after {elapsed:.2f}s: {exc}")
+        print(f"⚠️  {url} — ERRO {exc}")
     return None
 
 
-async def fetch_page_async(session: aiohttp.ClientSession, url: str, *, timeout: int = 10) -> Optional[str]:
-    """Asynchronously return page HTML if the request succeeds."""
-    start = time.time()
-    try:
-        async with session.get(url, timeout=timeout) as resp:
-            elapsed = time.time() - start
-            if resp.status == 200:
-                print(f"⬇️ Fetched {url} in {elapsed:.2f}s")
-                return await resp.text()
-            print(f"⚠️ Request for {url} returned status {resp.status} after {elapsed:.2f}s")
-    except aiohttp.ClientError as exc:
-        elapsed = time.time() - start
-        print(f"⚠️ Request for {url} failed after {elapsed:.2f}s: {exc}")
-    return None
-
-
-def parse_games(html: str) -> List[Game]:
-    """Extract must-play games from HTML and return them as ``Game`` objects."""
+def parse_games(html: str, page_idx: int) -> List[Game]:
     soup = BeautifulSoup(html, "html.parser")
     cards = soup.select("a.c-finderProductCard_container")
-
+    print(f"   🔍 {len(cards)} cartões totais na página {page_idx}")
     games: List[Game] = []
-    for card in cards:
-        if card.select_one('img[alt="must-play"]') is None:
-            continue
 
-        title_elem = card.select_one(
-            ".c-finderProductCard_titleHeading span:nth-of-type(2)"
-        )
-        rank_elem = card.select_one(
-            ".c-finderProductCard_titleHeading span:nth-of-type(1)"
-        )
-        date_elem = card.select_one(
-            ".c-finderProductCard_meta span:nth-of-type(1)"
-        )
+    for idx, card in enumerate(cards, 1):
+        if not card.select_one('img[alt="must-play"]'):
+            continue
+        title_elem = card.select_one(".c-finderProductCard_titleHeading span:nth-of-type(2)")
+        rank_elem = card.select_one(".c-finderProductCard_titleHeading span:nth-of-type(1)")
+        date_elem = card.select_one(".c-finderProductCard_meta span:nth-of-type(1)")
         metascore_elem = card.select_one(".c-siteReviewScore span")
+
         url = card.get("href")
         if url and url.startswith("/"):
             url = "https://www.metacritic.com" + url
 
         date: Optional[datetime] = None
-        if date_elem and date_elem.text.strip():
+        if date_elem:
             try:
                 date = datetime.strptime(date_elem.text.strip(), "%b %d, %Y")
             except ValueError:
@@ -113,233 +81,85 @@ def parse_games(html: str) -> List[Game]:
             url=url,
         )
         games.append(game)
-
+        print(
+            f"      ➕  [{page_idx}.{idx}] "
+            f"Rank {game.rank or '?':>3} • "
+            f"{(game.title or '—')[:45]:<45} • "
+            f"MS {game.metascore or '?'}"
+        )
+    print(f"   ✔️  {len(games)} must-plays filtrados na página {page_idx}\n")
     return games
 
 
-def parse_critic_reviews(html: str) -> Optional[int]:
-    """Return critic review count parsed from a game page."""
-    soup = BeautifulSoup(html, "html.parser")
-    elem = soup.select_one('a[data-testid="critic-path"] span')
-    if elem:
-        match = re.search(r"(\d+)\s+Critic", elem.get_text(strip=True))
-        if match:
-            return int(match.group(1))
-    return None
+def scrape_games(start: int, end: int, delay: float = 1.0) -> List[Game]:
+    print("🚀 Scraping Metacritic Must-Play — parâmetros:")
+    print(f"    páginas {start}-{end}, delay base {delay}s\n")
 
-
-def fetch_critic_reviews(game: Game, *, delay: float = 1.0) -> None:
-    """Populate ``game.critic_reviews`` by scraping its page."""
-    if not game.url:
-        return
-    print(f"🔎 Fetching critic reviews from {game.url}...")
-    start = time.time()
-    html = fetch_page(game.url)
-    elapsed = time.time() - start
-    if html:
-        game.critic_reviews = parse_critic_reviews(html)
-        print(
-            f"✅ {game.critic_reviews if game.critic_reviews is not None else 'No'} reviews found in {elapsed:.2f}s"
-        )
-    else:
-        print(f"⚠️ Failed to fetch page in {elapsed:.2f}s")
-    time.sleep(random.uniform(delay, delay + 1))
-
-
-async def fetch_critic_reviews_async(
-    session: aiohttp.ClientSession, game: Game, *, delay: float = 1.0
-) -> None:
-    """Asynchronously populate ``game.critic_reviews`` from its page."""
-    if not game.url:
-        return
-    print(f"🔎 Fetching critic reviews from {game.url}...")
-    start = time.time()
-    html = await fetch_page_async(session, game.url)
-    elapsed = time.time() - start
-    if html:
-        game.critic_reviews = parse_critic_reviews(html)
-        print(
-            f"✅ {game.critic_reviews if game.critic_reviews is not None else 'No'} reviews found in {elapsed:.2f}s"
-        )
-    else:
-        print(f"⚠️ Failed to fetch page in {elapsed:.2f}s")
-    await asyncio.sleep(random.uniform(delay, delay + 1))
-
-
-def fetch_reviews_for_games(games: Iterable[Game], *, delay: float = 1.0) -> None:
-    """Sequentially populate critic reviews for each game."""
-    for game in games:
-        fetch_critic_reviews(game, delay=delay)
-
-
-async def fetch_reviews_for_games_async(
-    games: Iterable[Game], *, delay: float = 1.0, concurrency: int = 5
-) -> None:
-    """Asynchronously populate critic reviews for each game."""
-    connector = aiohttp.TCPConnector(limit=concurrency)
-    async with aiohttp.ClientSession(headers=HEADERS, connector=connector) as session:
-        tasks = [fetch_critic_reviews_async(session, game, delay=delay) for game in games]
-        await asyncio.gather(*tasks)
-
-
-def scrape_games(start: int, end: int, *, delay: float = 1.0) -> List[Game]:
-    """Scrape games between ``start`` and ``end`` pages inclusive."""
-    print("🔎 Starting scraping Metacritic must-play games...\n")
     all_games: List[Game] = []
-
     for page in range(start, end + 1):
-        print(f"🔎 Accessing page {page}...")
+        print(f"➡️  PÁGINA {page}")
         url = (
             "https://www.metacritic.com/browse/game/?releaseYearMin=1958"
             f"&releaseYearMax=2025&page={page}"
         )
-
         html = fetch_page(url)
-        if html is None:
-            print("⚠️ Skipping page due to request failure.")
+        if not html:
+            print("   ⤬ Página ignorada\n")
             continue
 
-        games = parse_games(html)
+        games = parse_games(html, page)
         if not games:
-            print("⚠️ No game cards found. Stopping.")
+            print("   ⤬ Nenhum must-play, encerrando loop.\n")
             break
 
         all_games.extend(games)
+        print(f"   📊 Total acumulado: {len(all_games)} jogos\n")
+        time.sleep(random.uniform(delay, delay + 1))
 
-        wait = random.uniform(delay, delay + 1)
-        time.sleep(wait)
-
-    print("\n✅ Scraping completed.\n")
-    return all_games
-
-
-async def scrape_games_async(
-    start: int,
-    end: int,
-    *,
-    delay: float = 1.0,
-    concurrency: int = 5,
-) -> List[Game]:
-    """Asynchronously scrape games between ``start`` and ``end`` pages."""
-    print("🔎 Starting scraping Metacritic must-play games...\n")
-    connector = aiohttp.TCPConnector(limit=concurrency)
-    async with aiohttp.ClientSession(headers=HEADERS, connector=connector) as session:
-        tasks = []
-        for page in range(start, end + 1):
-            url = (
-                "https://www.metacritic.com/browse/game/?releaseYearMin=1958"
-                f"&releaseYearMax=2025&page={page}"
-            )
-            tasks.append(fetch_page_async(session, url))
-            await asyncio.sleep(random.uniform(delay, delay + 1))
-
-        pages = await asyncio.gather(*tasks)
-
-    all_games: List[Game] = []
-    for html in pages:
-        if html is None:
-            print("⚠️ Skipping page due to request failure.")
-            continue
-        games = parse_games(html)
-        if not games:
-            print("⚠️ No game cards found. Stopping.")
-            break
-        all_games.extend(games)
-
-    print("\n✅ Scraping completed.\n")
+    print("✅ Scraping finalizado.\n")
     return all_games
 
 
 def save_csv(games: Iterable[Game], filename: str) -> None:
-    """Write scraped games to ``filename``."""
-    with open(filename, "w", newline="", encoding="utf-8") as csv_file:
-        writer = csv.DictWriter(
-            csv_file,
-            fieldnames=[
-                "rank",
-                "title",
-                "release_date",
-                "metascore",
-                "critic_reviews",
-            ],
-        )
+    with open(filename, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=["rank", "title", "release_date", "metascore"])
         writer.writeheader()
-        for game in games:
+        for g in games:
             writer.writerow(
                 {
-                    "rank": game.rank,
-                    "title": game.title,
-                    "release_date": game.release_date.strftime("%Y-%m-%d")
-                    if game.release_date
-                    else None,
-                    "metascore": game.metascore,
-                    "critic_reviews": game.critic_reviews,
+                    "rank": g.rank,
+                    "title": g.title,
+                    "release_date": g.release_date.strftime("%Y-%m-%d") if g.release_date else "",
+                    "metascore": g.metascore,
                 }
             )
+    print(f"📁 CSV salvo em {filename}\n")
 
 
 def parse_args() -> argparse.Namespace:
-    """Return parsed command line arguments."""
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--start",
-        type=int,
-        default=1,
-        help="First page to scrape (inclusive).",
-    )
-    parser.add_argument(
-        "--end",
-        type=int,
-        default=16,
-        help="Last page to scrape (inclusive).",
-    )
-    parser.add_argument(
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("--start", type=int, default=1, help="Primeira página (inclusive).")
+    p.add_argument("--end", type=int, default=16, help="Última página (inclusive).")
+    p.add_argument(
         "--output",
         type=str,
-        default=datetime.today().strftime("metacritic_must_play_games_%Y-%m-%d.csv"),
-        help="Output CSV filename.",
+        default=datetime.today().strftime("metacritic_must_play_%Y-%m-%d.csv"),
+        help="Arquivo CSV de saída.",
     )
-    parser.add_argument(
-        "--delay",
-        type=float,
-        default=1.0,
-        help="Base delay between requests in seconds.",
-    )
-    parser.add_argument(
-        "--concurrency",
-        type=int,
-        default=1,
-        help="Number of concurrent requests (1 = sequential).",
-    )
-    return parser.parse_args()
+    p.add_argument("--delay", type=float, default=1.0, help="Delay base entre requests.")
+    return p.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    if args.concurrency > 1:
-        games = asyncio.run(
-            scrape_games_async(
-                args.start,
-                args.end,
-                delay=args.delay,
-                concurrency=args.concurrency,
-            )
-        )
-    else:
-        games = scrape_games(args.start, args.end, delay=args.delay)
+    start_time = time.time()
 
-    if args.concurrency > 1:
-        asyncio.run(
-            fetch_reviews_for_games_async(
-                games, delay=args.delay, concurrency=args.concurrency
-            )
-        )
-    else:
-        fetch_reviews_for_games(games, delay=args.delay)
-
+    games = scrape_games(args.start, args.end, delay=args.delay)
     games = sort_games_by_rank(games)
+    print(f"🔢 Total final: {len(games)} jogos válidos\n")
+
     save_csv(games, args.output)
-    print(f"📁 CSV file saved: {args.output}")
+    print(f"🏁 Concluído em {time.time() - start_time:.2f}s")
 
 
 if __name__ == "__main__":
