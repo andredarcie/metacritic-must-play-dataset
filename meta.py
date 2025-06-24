@@ -64,21 +64,26 @@ def series_to_md(series: pd.Series) -> str:
 
 def games_list_md(df: pd.DataFrame) -> str:
     lines: list[str] = []
-    grouped = df.sort_values("release_date").groupby("year")
+    grouped = df.groupby("year")
 
-    for year, group in grouped:
+    for year in sorted(grouped.groups.keys()):
         lines.append(f"#### {year}")
-        for _, row in group.iterrows():
+        group = grouped.get_group(year).sort_values("metascore", ascending=False)
+
+        for i, (_, row) in enumerate(group.iterrows()):
             date = (
                 row["release_date"].strftime("%Y-%m-%d")
                 if pd.notnull(row["release_date"])
                 else "??"
             )
-            lines.append(f"- **{row['title']}** ({date}) — Metascore: {row['metascore']}")
+            title_line = f"- **{row['title']}** ({date}) — Metascore: {row['metascore']}"
+            if i == 0:
+                title_line += " 🌟 *Possible GOTY*"
+            lines.append(title_line)
+
         lines.append("")  # linha em branco entre anos
 
     return "\n".join(lines)
-
 
 def build_stats_block(stats: Stats) -> str:
     return "\n".join(

@@ -68,56 +68,57 @@ Xbox: Highlights “200+ games rated 85+” on Game Pass to showcase critical va
 
 ### Must-plays released 2020+ (40)
 #### 2020
-- **Ori and the Will of the Wisps** (2020-03-11) — Metascore: 90
-- **Animal Crossing: New Horizons** (2020-03-20) — Metascore: 90
-- **Half-Life: Alyx** (2020-03-23) — Metascore: 93
-- **Persona 5 Royal** (2020-03-31) — Metascore: 95
+- **Persona 5 Royal** (2020-03-31) — Metascore: 95 🌟 *Possible GOTY*
 - **The Last of Us Part II** (2020-06-19) — Metascore: 93
-- **Microsoft Flight Simulator** (2020-08-18) — Metascore: 91
-- **Crusader Kings III** (2020-09-01) — Metascore: 91
+- **Half-Life: Alyx** (2020-03-23) — Metascore: 93
 - **Hades** (2020-09-17) — Metascore: 93
 - **Demon's Souls** (2020-11-11) — Metascore: 92
+- **Microsoft Flight Simulator** (2020-08-18) — Metascore: 91
+- **Crusader Kings III** (2020-09-01) — Metascore: 91
+- **Animal Crossing: New Horizons** (2020-03-20) — Metascore: 90
+- **Ori and the Will of the Wisps** (2020-03-11) — Metascore: 90
 
 #### 2021
-- **Chicory: A Colorful Tale** (2021-06-10) — Metascore: 90
-- **Forza Horizon 5** (2021-11-05) — Metascore: 92
+- **Forza Horizon 5** (2021-11-05) — Metascore: 92 🌟 *Possible GOTY*
 - **Final Fantasy XIV: Endwalker** (2021-12-07) — Metascore: 92
+- **Chicory: A Colorful Tale** (2021-06-10) — Metascore: 90
 
 #### 2022
-- **Elden Ring** (2022-02-25) — Metascore: 96
-- **The Stanley Parable: Ultra Deluxe** (2022-04-27) — Metascore: 90
+- **Elden Ring** (2022-02-25) — Metascore: 96 🌟 *Possible GOTY*
 - **God of War: Ragnarok** (2022-11-09) — Metascore: 94
 - **Chained Echoes** (2022-12-08) — Metascore: 90
+- **The Stanley Parable: Ultra Deluxe** (2022-04-27) — Metascore: 90
 
 #### 2023
+- **Baldur's Gate 3** (2023-08-03) — Metascore: 96 🌟 *Possible GOTY*
+- **The Legend of Zelda: Tears of the Kingdom** (2023-05-12) — Metascore: 96
 - **Metroid Prime Remastered** (2023-02-08) — Metascore: 94
 - **Resident Evil 4** (2023-03-24) — Metascore: 93
-- **The Legend of Zelda: Tears of the Kingdom** (2023-05-12) — Metascore: 96
-- **Street Fighter 6** (2023-06-02) — Metascore: 92
-- **DAVE THE DIVER** (2023-06-28) — Metascore: 90
-- **Baldur's Gate 3** (2023-08-03) — Metascore: 96
 - **Super Mario Bros. Wonder** (2023-10-20) — Metascore: 92
-- **Marvel's Spider-Man 2** (2023-10-20) — Metascore: 90
-- **Slay the Princess** (2023-10-23) — Metascore: 90
+- **Street Fighter 6** (2023-06-02) — Metascore: 92
 - **Against the Storm** (2023-12-08) — Metascore: 91
+- **Slay the Princess** (2023-10-23) — Metascore: 90
+- **Marvel's Spider-Man 2** (2023-10-20) — Metascore: 90
+- **DAVE THE DIVER** (2023-06-28) — Metascore: 90
 
 #### 2024
+- **Astro Bot** (2024-09-06) — Metascore: 94 🌟 *Possible GOTY*
+- **Elden Ring: Shadow of the Erdtree** (2024-06-21) — Metascore: 94
+- **Metaphor: ReFantazio** (2024-10-11) — Metascore: 94
+- **Final Fantasy VII Rebirth** (2024-02-29) — Metascore: 92
+- **UFO 50** (2024-09-18) — Metascore: 91
+- **Satisfactory** (2024-09-10) — Metascore: 91
+- **Animal Well** (2024-05-09) — Metascore: 90
+- **Balatro** (2024-02-20) — Metascore: 90
 - **The Last of Us Part II Remastered** (2024-01-19) — Metascore: 90
 - **Tekken 8** (2024-01-26) — Metascore: 90
-- **Balatro** (2024-02-20) — Metascore: 90
-- **Final Fantasy VII Rebirth** (2024-02-29) — Metascore: 92
-- **Animal Well** (2024-05-09) — Metascore: 90
-- **Elden Ring: Shadow of the Erdtree** (2024-06-21) — Metascore: 94
-- **Astro Bot** (2024-09-06) — Metascore: 94
-- **Satisfactory** (2024-09-10) — Metascore: 91
-- **UFO 50** (2024-09-18) — Metascore: 91
-- **Metaphor: ReFantazio** (2024-10-11) — Metascore: 94
 
 #### 2025
-- **Split Fiction** (2025-03-06) — Metascore: 91
+- **Clair Obscur: Expedition 33** (2025-04-24) — Metascore: 93 🌟 *Possible GOTY*
 - **Blue Prince** (2025-04-10) — Metascore: 92
-- **Clair Obscur: Expedition 33** (2025-04-24) — Metascore: 93
+- **Split Fiction** (2025-03-06) — Metascore: 91
 - **Death Stranding 2: On The Beach** (2025-06-26) — Metascore: 90
 
 <!-- STATS_END -->
+
 
