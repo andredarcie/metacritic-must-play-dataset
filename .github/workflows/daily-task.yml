@@ -33,12 +33,12 @@ jobs:
 
       - name: Commitar e fazer push do CSV
         run: |
-          if git diff --quiet; then
-            echo "Nenhuma alteração detectada no CSV. Nada para commit."
-          else
-            git add *.csv
-            git commit -m "🔄 Atualiza CSV automaticamente [skip ci]"
+          git add *.csv
+          if git status --porcelain | grep .; then
+            git commit -m "🔄 Adiciona CSV gerado automaticamente [skip ci]"
             git push
+          else
+            echo "Nenhuma alteração detectada. Nada para commit."
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
