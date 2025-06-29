@@ -1,20 +1,19 @@
-# .github/workflows/daily-task.yml
-name: Daily Background Job
+name: Run Script
 
 on:
+  workflow_dispatch:
   schedule:
-    - cron: '30 3 * * *'  # Roda todos os dias às 03:30 UTC
-  workflow_dispatch:       # Para rodar manualmente também
+    - cron: '0 3 * * *'  # Roda todo dia às 3h UTC
 
 jobs:
-  run:
+  run-script:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout do código
-      uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Rodar script
-      run: |
-        echo "Executando tarefa..."
-        python main.py
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Executar script
+        run: python main.py
