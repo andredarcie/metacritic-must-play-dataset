@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
 import csv
 import random
 import time
@@ -10,6 +11,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Iterable, List, Optional
 
+import aiohttp
 import requests
 from bs4 import BeautifulSoup
 
@@ -46,6 +48,26 @@ def fetch_page(url: str, timeout: int = 10) -> Optional[str]:
             return resp.text
         print(f"⚠️  {url} — HTTP {resp.status_code} {elapsed:.2f}s")
     except requests.RequestException as exc:
+        print(f"⚠️  {url} — ERRO {exc}")
+    return None
+
+
+async def fetch_page_async(
+    session: aiohttp.ClientSession, url: str, delay: float, timeout: int = 10
+) -> Optional[str]:
+    """Async version of fetch_page using aiohttp."""
+    start = time.time()
+    try:
+        async with session.get(url, headers=HEADERS, timeout=timeout) as resp:
+            text = await resp.text()
+            elapsed = time.time() - start
+            kb = len(text.encode()) / 1024
+            if resp.status == 200:
+                print(f"⬇️  {url} — OK {elapsed:.2f}s • {kb:.1f} KB")
+                await asyncio.sleep(random.uniform(delay, delay + 1))
+                return text
+            print(f"⚠️  {url} — HTTP {resp.status} {elapsed:.2f}s")
+    except aiohttp.ClientError as exc:
         print(f"⚠️  {url} — ERRO {exc}")
     return None
 
@@ -126,6 +148,46 @@ def scrape_games(start: int, end: int, delay: float = 1.0) -> List[Game]:
     return all_games
 
 
+async def scrape_games_async(
+    start: int, end: int, delay: float = 1.0, concurrency: int = 5
+) -> List[Game]:
+    """Fetch multiple pages concurrently respecting the delay."""
+    print("🚀 Scraping Metacritic Must-Play — parâmetros:")
+    print(
+        f"    páginas {start}-{end}, delay base {delay}s, concurrency {concurrency}\n"
+    )
+
+    connector = aiohttp.TCPConnector(limit=concurrency)
+    async with aiohttp.ClientSession(connector=connector) as session:
+        tasks = []
+        for page in range(start, end + 1):
+            print(f"➡️  PÁGINA {page}")
+            url = (
+                "https://www.metacritic.com/browse/game/?releaseYearMin=1958"
+                f"&releaseYearMax=2025&page={page}"
+            )
+            tasks.append(fetch_page_async(session, url, delay))
+
+        html_pages = await asyncio.gather(*tasks)
+
+    all_games: List[Game] = []
+    for page_idx, html in enumerate(html_pages, start):
+        if not html:
+            print("   ⤬ Página ignorada\n")
+            continue
+
+        games = parse_games(html, page_idx)
+        if not games:
+            print("   ⤬ Nenhum must-play, encerrando loop.\n")
+            continue
+
+        all_games.extend(games)
+        print(f"   📊 Total acumulado: {len(all_games)} jogos\n")
+
+    print("✅ Scraping finalizado.\n")
+    return all_games
+
+
 def save_csv(games: Iterable[Game], filename: str) -> None:
     with open(filename, "w", newline="", encoding="utf-8") as f:
         f.write("# Data scraped from Metacritic. Licensed under the MIT License.\n")
@@ -160,6 +222,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--delay", type=float, default=1.0, help="Delay base entre requests."
     )
+    p.add_argument(
+        "--concurrency",
+        type=int,
+        default=1,
+        help="Número de requisições concorrentes (usa asyncio + aiohttp).",
+    )
     return p.parse_args()
 
 
@@ -167,7 +235,14 @@ def main() -> None:
     args = parse_args()
     start_time = time.time()
 
-    games = scrape_games(args.start, args.end, delay=args.delay)
+    if args.concurrency > 1:
+        games = asyncio.run(
+            scrape_games_async(
+                args.start, args.end, delay=args.delay, concurrency=args.concurrency
+            )
+        )
+    else:
+        games = scrape_games(args.start, args.end, delay=args.delay)
     games = sort_games_by_rank(games)
     print(f"🔢 Total final: {len(games)} jogos válidos\n")
 
