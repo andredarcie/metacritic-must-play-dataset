@@ -121,5 +121,6 @@ Xbox: Highlights “200+ games rated 85+” on Game Pass to showcase critical va
 
 <!-- STATS_END -->
 
+## Data License
 
-
+The scraped CSV files are available under the [MIT License](LICENSE).

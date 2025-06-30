@@ -122,7 +122,10 @@ def scrape_games(start: int, end: int, delay: float = 1.0) -> List[Game]:
 
 def save_csv(games: Iterable[Game], filename: str) -> None:
     with open(filename, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["rank", "title", "release_date", "metascore"])
+        f.write("# Data scraped from Metacritic. Licensed under the MIT License.\n")
+        writer = csv.DictWriter(
+            f, fieldnames=["rank", "title", "release_date", "metascore"]
+        )
         writer.writeheader()
         for g in games:
             writer.writerow(
