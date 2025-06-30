@@ -28,7 +28,9 @@ class Game:
 def sort_games_by_rank(games: Iterable["Game"]) -> List["Game"]:
     return sorted(
         games,
-        key=lambda g: int(g.rank.rstrip(".")) if g.rank and g.rank.rstrip(".").isdigit() else 0,
+        key=lambda g: (
+            int(g.rank.rstrip(".")) if g.rank and g.rank.rstrip(".").isdigit() else 0
+        ),
     )
 
 
@@ -57,8 +59,12 @@ def parse_games(html: str, page_idx: int) -> List[Game]:
     for idx, card in enumerate(cards, 1):
         if not card.select_one('img[alt="must-play"]'):
             continue
-        title_elem = card.select_one(".c-finderProductCard_titleHeading span:nth-of-type(2)")
-        rank_elem = card.select_one(".c-finderProductCard_titleHeading span:nth-of-type(1)")
+        title_elem = card.select_one(
+            ".c-finderProductCard_titleHeading span:nth-of-type(2)"
+        )
+        rank_elem = card.select_one(
+            ".c-finderProductCard_titleHeading span:nth-of-type(1)"
+        )
         date_elem = card.select_one(".c-finderProductCard_meta span:nth-of-type(1)")
         metascore_elem = card.select_one(".c-siteReviewScore span")
 
@@ -122,14 +128,18 @@ def scrape_games(start: int, end: int, delay: float = 1.0) -> List[Game]:
 
 def save_csv(games: Iterable[Game], filename: str) -> None:
     with open(filename, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["rank", "title", "release_date", "metascore"])
+        writer = csv.DictWriter(
+            f, fieldnames=["rank", "title", "release_date", "metascore"]
+        )
         writer.writeheader()
         for g in games:
             writer.writerow(
                 {
                     "rank": g.rank,
                     "title": g.title,
-                    "release_date": g.release_date.strftime("%Y-%m-%d") if g.release_date else "",
+                    "release_date": (
+                        g.release_date.strftime("%Y-%m-%d") if g.release_date else ""
+                    ),
                     "metascore": g.metascore,
                 }
             )
@@ -146,7 +156,9 @@ def parse_args() -> argparse.Namespace:
         default=datetime.today().strftime("metacritic_must_play_%Y-%m-%d.csv"),
         help="Arquivo CSV de saída.",
     )
-    p.add_argument("--delay", type=float, default=1.0, help="Delay base entre requests.")
+    p.add_argument(
+        "--delay", type=float, default=1.0, help="Delay base entre requests."
+    )
     return p.parse_args()
 
 

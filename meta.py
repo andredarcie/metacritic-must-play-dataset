@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass
-from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
@@ -76,7 +75,9 @@ def games_list_md(df: pd.DataFrame) -> str:
                 if pd.notnull(row["release_date"])
                 else "??"
             )
-            title_line = f"- **{row['title']}** ({date}) — Metascore: {row['metascore']}"
+            title_line = (
+                f"- **{row['title']}** ({date}) — Metascore: {row['metascore']}"
+            )
             if i == 0:
                 title_line += " 🌟 *Possible GOTY*"
             lines.append(title_line)
@@ -84,6 +85,7 @@ def games_list_md(df: pd.DataFrame) -> str:
         lines.append("")  # linha em branco entre anos
 
     return "\n".join(lines)
+
 
 def build_stats_block(stats: Stats) -> str:
     return "\n".join(
@@ -120,7 +122,11 @@ def build_stats_block(stats: Stats) -> str:
 def find_readme(base: Path) -> Path:
     """Return first README*.md (case-insensitive) or default README.md path."""
     for p in base.iterdir():
-        if p.is_file() and p.name.lower().startswith("readme") and p.suffix.lower() == ".md":
+        if (
+            p.is_file()
+            and p.name.lower().startswith("readme")
+            and p.suffix.lower() == ".md"
+        ):
             return p
     return base / "README.md"
 
