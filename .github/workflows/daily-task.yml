@@ -3,7 +3,8 @@ name: Scrape e salva CSV
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 3 * * *'  # Roda todo dia às 3h UTC
+    # Executa no dia 1 e 16 de cada mês às 3h UTC (~a cada 15 dias)
+    - cron: '0 3 1,16 * *'
 
 jobs:
   scrape-job:
@@ -23,19 +24,22 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Executar script
+      - name: Executar scraper
         run: python main.py
+
+      - name: Atualizar README com estatísticas
+        run: python meta.py
 
       - name: Configurar Git
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
 
-      - name: Commitar e fazer push do CSV
+      - name: Commitar e fazer push do CSV e README
         run: |
-          git add *.csv
+          git add *.csv README.md
           if git status --porcelain | grep .; then
-            git commit -m "🔄 Adiciona CSV gerado automaticamente [skip ci]"
+            git commit -m "🔄 Atualiza CSV e README automaticamente [skip ci]"
             git push
           else
             echo "Nenhuma alteração detectada. Nada para commit."
