@@ -37,7 +37,16 @@ class Stats:
 
 # ───────────────────────── data pipeline ─────────────────────────
 def load_data(csv_file: str) -> pd.DataFrame:
-    df = pd.read_csv(csv_file)
+    df = pd.read_csv(csv_file, comment="#")
+    df.columns = [col.strip() for col in df.columns]
+
+    required_columns = {"release_date", "title", "metascore"}
+    missing = sorted(required_columns - set(df.columns))
+    if missing:
+        raise ValueError(
+            f"CSV {csv_file!r} is missing required columns: {', '.join(missing)}"
+        )
+
     df["release_date"] = pd.to_datetime(df["release_date"], errors="coerce")
     df["year"] = df["release_date"].dt.year
     df["decade"] = (df["year"] // 10) * 10

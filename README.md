@@ -33,28 +33,28 @@ Sony: Aims for 90+ Metacritic scores on major titles, as noted by ex-art directo
 Xbox: Highlights “200+ games rated 85+” on Game Pass to showcase critical value.
 
 <!-- STATS_START -->
-🎮 **Total must-play games:** 333
+🎮 **Total must-play games:** 338
 
 ### Games by decade
 1990: 26
-2000: 179
-2010: 88
-2020: 40
+2000: 180
+2010: 87
+2020: 45
 
 ### Top 5 years (most must-plays)
+2000: 25
 2001: 25
-2000: 24
 2002: 21
 2003: 20
 2004: 18
 
 ### Metascore distribution
-90: 82
+90: 83
 91: 64
-92: 60
+92: 61
 93: 46
-94: 34
-95: 15
+94: 35
+95: 17
 96: 17
 97: 12
 98: 2
@@ -64,9 +64,9 @@ Xbox: Highlights “200+ games rated 85+” on Game Pass to showcase critical va
 - GoldenEye 007 (1997-08-25) — Metascore 96
 
 ### Newest must-play game
-- Death Stranding 2: On The Beach (2025-06-26) — Metascore 90
+- Hades II (2025-09-25) — Metascore 94
 
-### Must-plays released 2020+ (40)
+### Must-plays released 2020+ (45)
 #### 2020
 - **Persona 5 Royal** (2020-03-31) — Metascore: 95 🌟 *Possible GOTY*
 - **The Last of Us Part II** (2020-06-19) — Metascore: 93
@@ -108,18 +108,22 @@ Xbox: Highlights “200+ games rated 85+” on Game Pass to showcase critical va
 - **Final Fantasy VII Rebirth** (2024-02-29) — Metascore: 92
 - **UFO 50** (2024-09-18) — Metascore: 91
 - **Satisfactory** (2024-09-10) — Metascore: 91
-- **Animal Well** (2024-05-09) — Metascore: 90
 - **Balatro** (2024-02-20) — Metascore: 90
+- **Animal Well** (2024-05-09) — Metascore: 90
 - **The Last of Us Part II Remastered** (2024-01-19) — Metascore: 90
 - **Tekken 8** (2024-01-26) — Metascore: 90
 
 #### 2025
-- **Clair Obscur: Expedition 33** (2025-04-24) — Metascore: 93 🌟 *Possible GOTY*
+- **Hades II** (2025-09-25) — Metascore: 94 🌟 *Possible GOTY*
+- **Clair Obscur: Expedition 33** (2025-04-24) — Metascore: 93
 - **Blue Prince** (2025-04-10) — Metascore: 92
+- **Hollow Knight: Silksong** (2025-09-04) — Metascore: 92
 - **Split Fiction** (2025-03-06) — Metascore: 91
-- **Death Stranding 2: On The Beach** (2025-06-26) — Metascore: 90
+- **Donkey Kong Bananza** (2025-07-17) — Metascore: 91
+- **Trails in the Sky 1st Chapter** (2025-09-19) — Metascore: 90
 
 <!-- STATS_END -->
+
 
 ## Data License
 
