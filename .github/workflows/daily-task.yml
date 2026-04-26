@@ -1,48 +1,50 @@
-name: Scrape e salva CSV
+name: Scrape and save CSV
 
 on:
   workflow_dispatch:
   schedule:
-    # Executa no dia 1 e 16 de cada mês às 3h UTC (~a cada 15 dias)
-    - cron: '0 3 1,16 * *'
+    # Runs every Monday at 3h UTC
+    - cron: '0 3 * * 1'
 
 jobs:
   scrape-job:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clonar repositório
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Configurar Python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - name: Instalar dependências
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Executar scraper
-        run: python main.py
+      - name: Run scraper
+        run: |
+          mkdir -p data
+          python main.py
 
-      - name: Atualizar README com estatísticas
+      - name: Update README with stats
         run: python meta.py
 
-      - name: Configurar Git
+      - name: Configure Git
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
 
-      - name: Commitar e fazer push do CSV e README
+      - name: Commit and push CSV and README
         run: |
-          git add *.csv README.md
+          git add data/ README.md
           if git status --porcelain | grep .; then
-            git commit -m "🔄 Atualiza CSV e README automaticamente [skip ci]"
+            git commit -m "🔄 Auto-update CSV and README [skip ci]"
             git push
           else
-            echo "Nenhuma alteração detectada. Nada para commit."
+            echo "No changes detected. Nothing to commit."
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

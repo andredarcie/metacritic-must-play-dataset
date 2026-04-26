@@ -6,16 +6,26 @@ import argparse
 import asyncio
 import csv
 import random
+import sys
 import time
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Iterable, List, Optional
 
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8")
+
 import aiohttp
 import requests
 from bs4 import BeautifulSoup
 
-HEADERS = {"User-Agent": "Mozilla/5.0"}
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    )
+}
 
 
 @dataclass
@@ -53,59 +63,89 @@ def fetch_page(url: str, timeout: int = 10) -> Optional[str]:
 
 
 async def fetch_page_async(
-    session: aiohttp.ClientSession, url: str, delay: float, timeout: int = 10
+    session: aiohttp.ClientSession,
+    url: str,
+    delay: float,
+    timeout: int = 10,
+    retries: int = 3,
 ) -> Optional[str]:
-    """Async version of fetch_page using aiohttp."""
-    start = time.time()
-    try:
-        async with session.get(url, headers=HEADERS, timeout=timeout) as resp:
-            text = await resp.text()
-            elapsed = time.time() - start
-            kb = len(text.encode()) / 1024
-            if resp.status == 200:
-                print(f"⬇️  {url} — OK {elapsed:.2f}s • {kb:.1f} KB")
-                await asyncio.sleep(random.uniform(delay, delay + 1))
-                return text
-            print(f"⚠️  {url} — HTTP {resp.status} {elapsed:.2f}s")
-    except aiohttp.ClientError as exc:
-        print(f"⚠️  {url} — ERRO {exc}")
+    """Async version of fetch_page using aiohttp with exponential backoff on 429/5xx."""
+    for attempt in range(1, retries + 1):
+        start = time.time()
+        try:
+            async with session.get(url, headers=HEADERS, timeout=timeout) as resp:
+                text = await resp.text()
+                elapsed = time.time() - start
+                kb = len(text.encode()) / 1024
+                if resp.status == 200:
+                    print(f"⬇️  {url} — OK {elapsed:.2f}s • {kb:.1f} KB")
+                    await asyncio.sleep(random.uniform(delay, delay + 1))
+                    return text
+                if resp.status in (429, 500, 502, 503, 504) and attempt < retries:
+                    wait = 2 ** attempt + random.uniform(0, 1)
+                    print(f"⚠️  {url} — HTTP {resp.status}, tentativa {attempt}/{retries}, aguardando {wait:.1f}s")
+                    await asyncio.sleep(wait)
+                    continue
+                print(f"⚠️  {url} — HTTP {resp.status} {elapsed:.2f}s")
+        except aiohttp.ClientError as exc:
+            if attempt < retries:
+                wait = 2 ** attempt + random.uniform(0, 1)
+                print(f"⚠️  {url} — ERRO {exc}, tentativa {attempt}/{retries}, aguardando {wait:.1f}s")
+                await asyncio.sleep(wait)
+                continue
+            print(f"⚠️  {url} — ERRO {exc}")
+        break
     return None
 
 
 def parse_games(html: str, page_idx: int) -> List[Game]:
     soup = BeautifulSoup(html, "html.parser")
-    cards = soup.select("a.c-finderProductCard_container")
+    # New Metacritic layout uses Tailwind utility classes instead of BEM identifiers.
+    # Cards are <a> tags with the grid-cols utility that defines the cover+info layout.
+    cards = [
+        a for a in soup.find_all("a")
+        if "grid-cols-[5.5rem_auto]" in " ".join(a.get("class", []))
+    ]
     print(f"   🔍 {len(cards)} cartões totais na página {page_idx}")
     games: List[Game] = []
 
     for idx, card in enumerate(cards, 1):
-        if not card.select_one('img[alt="must-play"]'):
+        if not card.find("img", alt="must-play"):
             continue
-        title_elem = card.select_one(
-            ".c-finderProductCard_titleHeading span:nth-of-type(2)"
-        )
-        rank_elem = card.select_one(
-            ".c-finderProductCard_titleHeading span:nth-of-type(1)"
-        )
-        date_elem = card.select_one(".c-finderProductCard_meta span:nth-of-type(1)")
-        metascore_elem = card.select_one(".c-siteReviewScore span")
+
+        # Spans without classes hold rank, title, and date in DOM order.
+        plain_spans = [s for s in card.find_all("span") if not s.get("class")]
+        rank_text = plain_spans[0].get_text(strip=True) if len(plain_spans) > 0 else None
+        title_text = plain_spans[1].get_text(strip=True) if len(plain_spans) > 1 else None
+        date_text = plain_spans[2].get_text(strip=True) if len(plain_spans) > 2 else None
+
+        score_elem = card.select_one(".c-siteReviewScore span")
 
         url = card.get("href")
         if url and url.startswith("/"):
             url = "https://www.metacritic.com" + url
 
         date: Optional[datetime] = None
-        if date_elem:
+        if date_text:
+            for fmt in ("%b %d, %Y", "%B %d, %Y"):
+                try:
+                    date = datetime.strptime(date_text, fmt)
+                    break
+                except ValueError:
+                    pass
+
+        score: Optional[int] = None
+        if score_elem:
             try:
-                date = datetime.strptime(date_elem.text.strip(), "%b %d, %Y")
+                score = int(score_elem.get_text(strip=True))
             except ValueError:
                 pass
 
         game = Game(
-            rank=rank_elem.text.strip() if rank_elem else None,
-            title=title_elem.text.strip() if title_elem else None,
+            rank=rank_text,
+            title=title_text,
             release_date=date,
-            metascore=int(metascore_elem.text.strip()) if metascore_elem else None,
+            metascore=score,
             url=url,
         )
         games.append(game)
@@ -119,6 +159,14 @@ def parse_games(html: str, page_idx: int) -> List[Game]:
     return games
 
 
+def _browse_url(page: int) -> str:
+    year = datetime.today().year
+    return (
+        f"https://www.metacritic.com/browse/game/?releaseYearMin=1958"
+        f"&releaseYearMax={year}&page={page}"
+    )
+
+
 def scrape_games(start: int, end: int, delay: float = 1.0) -> List[Game]:
     print("🚀 Scraping Metacritic Must-Play — parâmetros:")
     print(f"    páginas {start}-{end}, delay base {delay}s\n")
@@ -126,10 +174,7 @@ def scrape_games(start: int, end: int, delay: float = 1.0) -> List[Game]:
     all_games: List[Game] = []
     for page in range(start, end + 1):
         print(f"➡️  PÁGINA {page}")
-        url = (
-            "https://www.metacritic.com/browse/game/?releaseYearMin=1958"
-            f"&releaseYearMax=2025&page={page}"
-        )
+        url = _browse_url(page)
         html = fetch_page(url)
         if not html:
             print("   ⤬ Página ignorada\n")
@@ -162,11 +207,7 @@ async def scrape_games_async(
         tasks = []
         for page in range(start, end + 1):
             print(f"➡️  PÁGINA {page}")
-            url = (
-                "https://www.metacritic.com/browse/game/?releaseYearMin=1958"
-                f"&releaseYearMax=2025&page={page}"
-            )
-            tasks.append(fetch_page_async(session, url, delay))
+            tasks.append(fetch_page_async(session, _browse_url(page), delay))
 
         html_pages = await asyncio.gather(*tasks)
 
@@ -179,7 +220,7 @@ async def scrape_games_async(
         games = parse_games(html, page_idx)
         if not games:
             print("   ⤬ Nenhum must-play, encerrando loop.\n")
-            continue
+            break
 
         all_games.extend(games)
         print(f"   📊 Total acumulado: {len(all_games)} jogos\n")
@@ -216,7 +257,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--output",
         type=str,
-        default=datetime.today().strftime("metacritic_must_play_%Y-%m-%d.csv"),
+        default=datetime.today().strftime("data/metacritic_must_play_%Y-%m-%d.csv"),
         help="Arquivo CSV de saída.",
     )
     p.add_argument(

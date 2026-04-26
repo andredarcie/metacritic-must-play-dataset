@@ -18,8 +18,8 @@ import pandas as pd
 
 # ───────────────────────── CSV discovery ─────────────────────────
 def find_latest_csv() -> Optional[str]:
-    """Return the most recently modified *.csv file in the current folder."""
-    csv_files = [p for p in Path(".").glob("*.csv") if p.is_file()]
+    """Return the most recently modified *.csv file in the data/ folder."""
+    csv_files = [p for p in Path("data").glob("*.csv") if p.is_file()]
     return str(max(csv_files, key=lambda p: p.stat().st_mtime)) if csv_files else None
 
 
@@ -91,7 +91,7 @@ def games_list_md(df: pd.DataFrame) -> str:
                 title_line += " 🌟 *Possible GOTY*"
             lines.append(title_line)
 
-        lines.append("")  # linha em branco entre anos
+        lines.append("")  # blank line between years
 
     return "\n".join(lines)
 

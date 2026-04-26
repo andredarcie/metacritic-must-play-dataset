@@ -1,15 +1,18 @@
-# Metacritic Must-play dataset
+# Metacritic Must-Play Dataset
 
-The Metacritic "Must-Play" badge is automatically given to games that achieve a Metascore 
-of 90 or higher based on at least 15 professional critic reviews, signaling that the game 
-is universally acclaimed and considered one of the best on its platform.
+A dataset of all Metacritic **Must-Play** games — titles that achieved a Metascore of **90 or higher** based on at least 15 professional critic reviews, signaling universal acclaim.
+
+> **Why it matters**
+> - **Nintendo** promoted Breath of the Wild as having “more perfect scores than any game in Metacritic history.”
+> - **Sony** targets 90+ Metacritic scores on major titles, as noted by ex-art director Rafael Grassetti.
+> - **Xbox** highlights “200+ games rated 85+” on Game Pass to showcase critical value.
 
 ## Usage
 
-Install the required packages:
+Install dependencies:
 
 ```bash
-pip install requests bs4 pandas aiohttp
+pip install -r requirements.txt
 ```
 
 Run the scraper sequentially:
@@ -18,41 +21,35 @@ Run the scraper sequentially:
 python main.py --start 1 --end 16
 ```
 
-Use multiple concurrent requests (asyncio + aiohttp):
+Run with concurrent requests (faster):
 
 ```bash
 python main.py --concurrency 5
 ```
 
-The generated CSV now includes a `critic_reviews` column with the number of
-professional critic reviews scraped from each game's page.
-
-Importance:
-Nintendo: Promoted Breath of the Wild as having “more perfect scores than any game in Metacritic history.”
-Sony: Aims for 90+ Metacritic scores on major titles, as noted by ex-art director Rafael Grassetti.
-Xbox: Highlights “200+ games rated 85+” on Game Pass to showcase critical value.
+The generated CSV is saved to the `data/` folder. Stats in this README are updated automatically every week via GitHub Actions.
 
 <!-- STATS_START -->
-🎮 **Total must-play games:** 338
+🎮 **Total must-play games:** 337
 
 ### Games by decade
-1990: 26
+1990: 27
 2000: 180
-2010: 87
-2020: 45
+2010: 86
+2020: 44
 
 ### Top 5 years (most must-plays)
 2000: 25
 2001: 25
 2002: 21
 2003: 20
-2004: 18
+2007: 18
 
 ### Metascore distribution
 90: 83
 91: 64
 92: 61
-93: 46
+93: 45
 94: 35
 95: 17
 96: 17
@@ -64,9 +61,9 @@ Xbox: Highlights “200+ games rated 85+” on Game Pass to showcase critical va
 - GoldenEye 007 (1997-08-25) — Metascore 96
 
 ### Newest must-play game
-- Hades II (2025-09-25) — Metascore 94
+- Hades II (2025-09-25) — Metascore 95
 
-### Must-plays released 2020+ (45)
+### Must-plays released 2020+ (44)
 #### 2020
 - **Persona 5 Royal** (2020-03-31) — Metascore: 95 🌟 *Possible GOTY*
 - **The Last of Us Part II** (2020-06-19) — Metascore: 93
@@ -114,15 +111,17 @@ Xbox: Highlights “200+ games rated 85+” on Game Pass to showcase critical va
 - **Tekken 8** (2024-01-26) — Metascore: 90
 
 #### 2025
-- **Hades II** (2025-09-25) — Metascore: 94 🌟 *Possible GOTY*
-- **Clair Obscur: Expedition 33** (2025-04-24) — Metascore: 93
+- **The Legend of Zelda: Tears of the Kingdom - Nintendo Switch 2 Edition** (2025-06-05) — Metascore: 95 🌟 *Possible GOTY*
+- **Hades II** (2025-09-25) — Metascore: 95
+- **The Legend of Zelda: Breath of the Wild - Nintendo Switch 2 Edition** (2025-06-05) — Metascore: 94
+- **Clair Obscur: Expedition 33** (2025-04-24) — Metascore: 92
 - **Blue Prince** (2025-04-10) — Metascore: 92
-- **Hollow Knight: Silksong** (2025-09-04) — Metascore: 92
 - **Split Fiction** (2025-03-06) — Metascore: 91
 - **Donkey Kong Bananza** (2025-07-17) — Metascore: 91
-- **Trails in the Sky 1st Chapter** (2025-09-19) — Metascore: 90
+- **Hollow Knight: Silksong** (2025-09-04) — Metascore: 90
 
 <!-- STATS_END -->
+
 
 
 ## Data License
