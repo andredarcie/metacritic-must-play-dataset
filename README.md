@@ -39,7 +39,7 @@ The generated CSV is saved to the `data/` folder. Stats in this README are updat
 2020: 44
 
 ### Top 5 years (most must-plays)
-2000: 25
+2000: 26
 2001: 25
 2002: 21
 2003: 20
@@ -121,6 +121,7 @@ The generated CSV is saved to the `data/` folder. Stats in this README are updat
 - **Hollow Knight: Silksong** (2025-09-04) — Metascore: 90
 
 <!-- STATS_END -->
+
 
 
 
