@@ -39,8 +39,8 @@ The generated CSV is saved to the `data/` folder. Stats in this README are updat
 2020: 44
 
 ### Top 5 years (most must-plays)
-2000: 26
 2001: 25
+2000: 25
 2002: 21
 2003: 20
 2007: 18
@@ -105,8 +105,8 @@ The generated CSV is saved to the `data/` folder. Stats in this README are updat
 - **Final Fantasy VII Rebirth** (2024-02-29) — Metascore: 92
 - **UFO 50** (2024-09-18) — Metascore: 91
 - **Satisfactory** (2024-09-10) — Metascore: 91
-- **Animal Well** (2024-05-09) — Metascore: 90
 - **Balatro** (2024-02-20) — Metascore: 90
+- **Animal Well** (2024-05-09) — Metascore: 90
 - **The Last of Us Part II Remastered** (2024-01-19) — Metascore: 90
 - **Tekken 8** (2024-01-26) — Metascore: 90
 
@@ -121,6 +121,7 @@ The generated CSV is saved to the `data/` folder. Stats in this README are updat
 - **Hollow Knight: Silksong** (2025-09-04) — Metascore: 90
 
 <!-- STATS_END -->
+
 
 
 
