@@ -7,6 +7,22 @@ A dataset of all Metacritic **Must-Play** games — titles that achieved a Metas
 > - **Sony** targets 90+ Metacritic scores on major titles, as noted by ex-art director Rafael Grassetti.
 > - **Xbox** highlights “200+ games rated 85+” on Game Pass to showcase critical value.
 
+## Project structure
+
+```
+metacritic-must-play-dataset/
+├── index.html       # Visual dashboard (requires a web server — see below)
+├── main.py          # Scraper — fetches must-play games from Metacritic
+├── meta.py          # Analyzer — computes stats and updates this README
+├── data/
+│   ├── latest.csv                        # Always points to the most recent scrape
+│   └── metacritic_must_play_YYYY-MM-DD.csv  # Dated archive (one per run)
+├── requirements.txt
+└── .github/
+    └── workflows/
+        └── daily-task.yml  # Weekly automation (every Monday at 3 AM UTC)
+```
+
 ## Usage
 
 Install dependencies:
@@ -15,19 +31,86 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Run the scraper sequentially:
+### Running the scraper
+
+Runs sequentially (default):
 
 ```bash
 python main.py --start 1 --end 16
 ```
 
-Run with concurrent requests (faster):
+Runs with concurrent requests (faster):
 
 ```bash
 python main.py --concurrency 5
 ```
 
-The generated CSV is saved to the `data/` folder. Stats in this README are updated automatically every week via GitHub Actions.
+The generated CSV is saved to `data/metacritic_must_play_YYYY-MM-DD.csv`.
+
+**Scraper options:**
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--start` | `1` | First page to scrape (inclusive) |
+| `--end` | `16` | Last page to scrape (inclusive) |
+| `--output` | `data/metacritic_must_play_<date>.csv` | Output file path |
+| `--delay` | `1.0` | Base delay in seconds between requests |
+| `--concurrency` | `1` | Number of concurrent requests (uses asyncio + aiohttp) |
+
+### Updating the README stats
+
+After scraping, regenerate the stats block in this file:
+
+```bash
+python meta.py                    # uses the most recent CSV in data/
+python meta.py path/to/file.csv   # or specify a file explicitly
+```
+
+### Automation
+
+A GitHub Actions workflow runs every **Monday at 3 AM UTC**, automatically scraping Metacritic, updating the CSV, regenerating the stats, and committing the results back to the repository. You can also trigger it manually via the Actions tab.
+
+## Dashboard (`index.html`)
+
+The repo includes a visual dashboard that reads `data/latest.csv` at runtime via `fetch()`. Because of this it **requires a web server** — opening `index.html` directly as a `file://` URL will not work.
+
+### Hosted (recommended)
+
+Enable **GitHub Pages** on the repository (Settings → Pages → Branch: `main`, folder: `/ (root)`). The dashboard will be live at:
+
+```
+https://<your-username>.github.io/<repo-name>/
+```
+
+It updates automatically every Monday alongside the data.
+
+### Local development
+
+Pick any of the options below from the repo root:
+
+```bash
+# Python (no install needed)
+python -m http.server 8000
+
+# Node.js
+npx serve .
+
+# VS Code
+# Install the "Live Server" extension, then right-click index.html → Open with Live Server
+```
+
+Then open `http://localhost:8000` in your browser.
+
+## CSV format
+
+Each row represents one must-play game:
+
+| Column | Type | Example |
+|--------|------|---------|
+| `rank` | string | `1.` |
+| `title` | string | `The Legend of Zelda: Ocarina of Time` |
+| `release_date` | `YYYY-MM-DD` | `1998-11-23` |
+| `metascore` | integer | `99` |
 
 <!-- STATS_START -->
 🎮 **Total must-play games:** 337

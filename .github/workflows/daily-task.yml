@@ -28,6 +28,7 @@ jobs:
         run: |
           mkdir -p data
           python main.py
+          cp "$(ls -t data/metacritic_must_play_*.csv | head -1)" data/latest.csv
 
       - name: Update README with stats
         run: python meta.py

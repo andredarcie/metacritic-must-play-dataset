@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metacritic Must-Play — The Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  /* ─── TOKENS ─── */
+  :root {
+    --gold: #f5c518;
+    --gold-dim: rgba(245,197,24,0.1);
+    --gold-dim2: rgba(245,197,24,0.05);
+    --gold-mid: rgba(245,197,24,0.22);
+    --purple: #6c63ff;
+    --purple-dim: rgba(108,99,255,0.12);
+    --bg: #0a0a0f;
+    --card: rgba(255,255,255,0.03);
+    --card-border: rgba(255,255,255,0.07);
+    --card-hover: rgba(255,255,255,0.055);
+    --text: #d8d8e4;
+    --text-dim: rgba(216,216,228,0.38);
+    --text-mid: rgba(216,216,228,0.62);
+    --radius: 12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Instrument Sans', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 48px;
+    background: rgba(10,10,15,0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+  }
+
+  .nav-logo span { color: var(--text-dim); font-weight: 400; }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245,197,24,0.08) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .hero-glow2 {
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(108,99,255,0.06) 0%, transparent 70%);
+    top: 30%; left: 20%;
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 0.35s;
+  }
+
+  .hero-title .accent { color: var(--gold); }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--text-mid);
+    max-width: 520px;
+    margin: 0 auto 60px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 0.5s;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 0.65s;
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .hero-stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.2rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .hero-divider {
+    width: 1px;
+    height: 60px;
+    background: var(--card-border);
+    align-self: center;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards 1.2s;
+  }
+
+  .scroll-hint span {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .scroll-arrow {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease infinite;
+  }
+
+  /* ─── SECTIONS ─── */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--card-border);
+  }
+
+  /* ─── KPI CARDS ─── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 80px;
+    padding: 0 24px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .kpi-card:hover {
+    border-color: rgba(245,197,24,0.3);
+    transform: translateY(-2px);
+  }
+
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+
+  .kpi-icon {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+  }
+
+  .kpi-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  .kpi-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .kpi-sub {
+    font-size: 0.78rem;
+    color: var(--text-mid);
+    margin-top: 6px;
+  }
+
+  /* ─── CHART CONTAINERS ─── */
+  .chart-grid {
+    display: grid;
+    gap: 24px;
+  }
+
+  .chart-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .chart-grid-3 {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chart-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .chart-card-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 28px;
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+  }
+
+  .chart-wrap canvas { max-width: 100%; }
+
+  /* ─── TOP 20 LIST ─── */
+  .top-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .top-item {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    transition: background 0.2s, border-color 0.2s;
+    cursor: default;
+  }
+
+  .top-item:hover {
+    background: rgba(245,197,24,0.05);
+    border-color: rgba(245,197,24,0.2);
+  }
+
+  .top-item.gold-row { border-color: rgba(245,197,24,0.35); background: rgba(245,197,24,0.06); }
+  .top-item.silver-row { border-color: rgba(200,200,220,0.25); }
+  .top-item.bronze-row { border-color: rgba(180,120,60,0.25); }
+
+  .top-rank {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  .top-rank.rank-1 { color: var(--gold); font-weight: 500; }
+  .top-rank.rank-2 { color: #c0c0d0; }
+  .top-rank.rank-3 { color: #cd7f32; }
+
+  .top-title {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .top-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .score-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .score-99 { background: rgba(245,197,24,0.2); color: var(--gold); border: 1px solid rgba(245,197,24,0.4); }
+  .score-98 { background: rgba(245,197,24,0.14); color: #e8b800; border: 1px solid rgba(245,197,24,0.28); }
+  .score-97 { background: rgba(108,99,255,0.18); color: #9d97ff; border: 1px solid rgba(108,99,255,0.35); }
+  .score-96 { background: rgba(108,99,255,0.12); color: #8880ff; border: 1px solid rgba(108,99,255,0.25); }
+  .score-lo { background: rgba(255,255,255,0.06); color: var(--text-mid); border: 1px solid var(--card-border); }
+
+  /* ─── RECENT GRID ─── */
+  .year-block { margin-bottom: 48px; }
+
+  .year-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--gold);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .recent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+
+  .recent-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    transition: border-color 0.25s, transform 0.25s;
+    overflow: hidden;
+  }
+
+  .recent-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 60px; height: 60px;
+    background: radial-gradient(circle at top right, var(--gold-dim2), transparent);
+    pointer-events: none;
+  }
+
+  .recent-card:hover {
+    border-color: rgba(245,197,24,0.25);
+    transform: translateY(-2px);
+  }
+
+  .recent-card.goty::before {
+    content: '★ GOTY';
+    position: absolute;
+    top: 12px; right: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    background: var(--gold);
+    color: #0a0a0f;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .recent-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .recent-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+
+  .recent-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── INSIGHTS ─── */
+  .insights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .insight-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .insight-card:hover { border-color: rgba(245,197,24,0.25); }
+
+  .insight-icon {
+    font-size: 2rem;
+    margin-bottom: 14px;
+  }
+
+  .insight-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  .insight-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .insight-desc {
+    font-size: 0.82rem;
+    color: var(--text-mid);
+    line-height: 1.5;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center;
+    padding: 48px 24px;
+    border-top: 1px solid var(--card-border);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  footer a { color: var(--gold); text-decoration: none; }
+
+  /* ─── FRANCHISES ─── */
+  .franchise-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .franchise-ranked-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .franchise-row {
+    display: grid;
+    grid-template-columns: 36px 24px 1fr auto 56px;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    transition: border-color 0.2s, background 0.2s;
+    cursor: default;
+  }
+
+  .franchise-row:hover {
+    border-color: rgba(245,197,24,0.2);
+    background: rgba(245,197,24,0.04);
+  }
+
+  .franchise-row.fr-gold { border-color: rgba(245,197,24,0.35); }
+  .franchise-row.fr-silver { border-color: rgba(200,200,220,0.2); }
+  .franchise-row.fr-bronze { border-color: rgba(180,120,60,0.2); }
+
+  .fr-rank {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-align: right;
+  }
+  .fr-rank.r1 { color: var(--gold); }
+  .fr-rank.r2 { color: #c0c0d0; }
+  .fr-rank.r3 { color: #cd7f32; }
+
+  .fr-icon { font-size: 1rem; text-align: center; }
+
+  .fr-name {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .fr-avg {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  .fr-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--gold);
+    background: var(--gold-dim);
+    border: 1px solid rgba(245,197,24,0.2);
+    border-radius: 20px;
+    padding: 2px 10px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .franchise-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+
+  .franchise-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 22px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+
+  .franchise-card:hover {
+    border-color: rgba(245,197,24,0.22);
+    transform: translateY(-2px);
+  }
+
+  .franchise-card .fc-rank-bg {
+    position: absolute;
+    top: -8px; right: 12px;
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    font-weight: 900;
+    color: rgba(245,197,24,0.05);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .fc-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .fc-icon { font-size: 1.4rem; }
+
+  .fc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .fc-meta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .fc-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .fc-stat-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .fc-stat-lbl {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .fc-sep { width: 1px; height: 28px; background: var(--card-border); }
+
+  .fc-games {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 140px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(245,197,24,0.2) transparent;
+  }
+
+  .fc-games::-webkit-scrollbar { width: 3px; }
+  .fc-games::-webkit-scrollbar-track { background: transparent; }
+  .fc-games::-webkit-scrollbar-thumb { background: rgba(245,197,24,0.2); border-radius: 2px; }
+
+  .fc-game-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .fc-game-row:last-child { border-bottom: none; }
+
+  .fc-game-title {
+    font-size: 0.76rem;
+    color: var(--text-mid);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .fc-game-score {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .franchise-layout { grid-template-columns: 1fr; }
+    .franchise-cards-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ─── DIVIDER ─── */
+  .full-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--card-border), transparent);
+    margin: 0;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.15); }
+  }
+
+  @keyframes countUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .hero-stats { gap: 24px; }
+    .hero-divider { display: none; }
+    .chart-grid-2, .chart-grid-3 { grid-template-columns: 1fr; }
+    .section { padding: 60px 16px; }
+    .kpi-grid { padding: 0 16px; }
+    .franchise-layout { grid-template-columns: 1fr; }
+    .franchise-cards-grid { grid-template-columns: 1fr; }
+    .insight-card { flex-direction: column !important; }
+  }
+
+  /* ═══ REFINEMENTS ═══ */
+
+  /* Lucide icon chip */
+  .icon-chip {
+    width: 36px; height: 36px;
+    border-radius: 9px;
+    border: 1px solid var(--card-border);
+    background: var(--gold-dim);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: var(--gold);
+  }
+  .icon-chip.purple { background: var(--purple-dim); color: var(--purple); }
+  .icon-chip svg { width: 16px; height: 16px; stroke-width: 1.6; stroke: currentColor; fill: none; }
+
+  /* KPI left-border style */
+  .kpi-card { border-left: 2px solid var(--gold) !important; }
+  .kpi-card::before { display: none !important; }
+  .kpi-card:hover { transform: translateY(-1px); }
+  .kpi-icon { display: none; }
+  .kpi-icon-wrap { margin-bottom: 10px; }
+
+  /* Hero: hide synthetic glow blobs */
+  .hero-glow, .hero-glow2 { display: none; }
+
+  /* GOTY badge: no emoji */
+  .recent-card.goty::before { content: 'GOTY'; letter-spacing: 0.12em; }
+
+  /* Insights: horizontal layout */
+  .insights-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  .insight-card { display: flex; flex-direction: row; align-items: flex-start; gap: 16px; padding: 22px 24px; }
+  .insight-icon { display: none; }
+  .insight-chip {
+    width: 38px; height: 38px; flex-shrink: 0;
+    border-radius: 9px; border: 1px solid var(--card-border);
+    background: var(--gold-dim);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); margin-top: 2px;
+  }
+  .insight-chip svg { width: 16px; height: 16px; stroke-width: 1.6; stroke: currentColor; fill: none; }
+  .insight-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .insight-value { font-size: 1.3rem !important; }
+
+  /* Franchise row icon — initial badge */
+  .fr-icon { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; }
+  .fr-initial {
+    display: flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 5px;
+    background: var(--gold-dim); border: 1px solid rgba(245,197,24,0.25);
+    font-family: 'Playfair Display', serif; font-size: 11px; font-weight: 700;
+    color: var(--gold); line-height: 1; flex-shrink: 0;
+  }
+
+  /* Franchise card: cleaner initial badge */
+  .fc-rank-bg { display: none !important; }
+  .fc-icon { display: none; }
+  .fc-icon-wrap { display: none; }
+  .fc-initial-badge {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: var(--gold-dim); border: 1px solid rgba(245,197,24,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700;
+    color: var(--gold); flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Must<span>Play</span> Archive</div>
+  <ul class="nav-links">
+    <li><a href="#charts">Charts</a></li>
+    <li><a href="#top20">Top 20</a></li>
+    <li><a href="#recent">Recent</a></li>
+    <li><a href="#franchises">Franchises</a></li>
+    <li><a href="#insights">Insights</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-eyebrow">Metacritic · Metascore 90+ · Universal Acclaim</div>
+  <h1 class="hero-title">The <span class="accent">Must-Play</span><br>Archive</h1>
+  <p class="hero-sub">Every game that achieved universal critical acclaim — a Metascore of 90 or higher with at least 15 professional reviews.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="hero-total">—</div>
+      <div class="hero-stat-label">Must-Play Games</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="hero-score-range">—</div>
+      <div class="hero-stat-label">Score Range</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="hero-first-year">—</div>
+      <div class="hero-stat-label">First Entry</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="hero-avg">—</div>
+      <div class="hero-stat-label">Avg Metascore</div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- KPI CARDS -->
+<div class="kpi-grid reveal" id="kpis">
+  <div class="kpi-card">
+    <div class="icon-chip" style="margin-bottom:10px"><i data-lucide="trophy"></i></div>
+    <div class="kpi-value" id="kpi-best-score">—</div>
+    <div class="kpi-label">Highest Metascore</div>
+    <div class="kpi-sub" id="kpi-best-game">—</div>
+  </div>
+  <div class="kpi-card">
+    <div class="icon-chip" style="margin-bottom:10px"><i data-lucide="calendar"></i></div>
+    <div class="kpi-value" id="kpi-peak-year">—</div>
+    <div class="kpi-label">Peak Year</div>
+    <div class="kpi-sub" id="kpi-peak-count">—</div>
+  </div>
+  <div class="kpi-card">
+    <div class="icon-chip" style="margin-bottom:10px"><i data-lucide="history"></i></div>
+    <div class="kpi-value" id="kpi-years-spanned">—</div>
+    <div class="kpi-label">Years Spanned</div>
+    <div class="kpi-sub" id="kpi-year-range">—</div>
+  </div>
+  <div class="kpi-card">
+    <div class="icon-chip" style="margin-bottom:10px"><i data-lucide="star"></i></div>
+    <div class="kpi-value" id="kpi-score90-count">—</div>
+    <div class="kpi-label">Scored Exactly 90</div>
+    <div class="kpi-sub">The entry threshold</div>
+  </div>
+  <div class="kpi-card">
+    <div class="icon-chip purple" style="margin-bottom:10px"><i data-lucide="sparkles"></i></div>
+    <div class="kpi-value" id="kpi-2020-count">—</div>
+    <div class="kpi-label">Since 2020</div>
+    <div class="kpi-sub">Modern must-plays</div>
+  </div>
+</div>
+
+<div class="full-divider"></div>
+
+<!-- CHARTS -->
+<section class="section" id="charts">
+  <div class="section-header reveal">
+    <span class="section-label">01</span>
+    <h2 class="section-title">Visual Analysis</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Year bar chart full width -->
+  <div class="chart-card reveal" style="margin-bottom: 24px;">
+    <div class="chart-card-title">Must-Plays Per Year</div>
+    <div class="chart-card-sub" id="chart-year-sub">COUNT OF GAMES ACHIEVING 90+ METASCORE</div>
+    <div class="chart-wrap" style="height: 280px;">
+      <canvas id="chartYear"></canvas>
+    </div>
+  </div>
+
+  <div class="chart-grid chart-grid-3 reveal">
+    <!-- Score distribution -->
+    <div class="chart-card">
+      <div class="chart-card-title">Score Distribution</div>
+      <div class="chart-card-sub">GAMES PER METASCORE BAND</div>
+      <div class="chart-wrap" style="height: 260px;">
+        <canvas id="chartScore"></canvas>
+      </div>
+    </div>
+    <!-- Decade donut -->
+    <div class="chart-card">
+      <div class="chart-card-title">By Decade</div>
+      <div class="chart-card-sub">SHARE OF MUST-PLAYS</div>
+      <div class="chart-wrap" style="height: 260px;">
+        <canvas id="chartDecade"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="full-divider"></div>
+
+<!-- TOP 20 -->
+<section class="section" id="top20">
+  <div class="section-header reveal">
+    <span class="section-label">02</span>
+    <h2 class="section-title">All-Time Top 20</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="top-list reveal" id="top20-list"></div>
+</section>
+
+<div class="full-divider"></div>
+
+<!-- RECENT -->
+<section class="section" id="recent">
+  <div class="section-header reveal">
+    <span class="section-label">03</span>
+    <h2 class="section-title">Must-Plays Since 2020</h2>
+    <div class="section-line"></div>
+  </div>
+  <div id="recent-container"></div>
+</section>
+
+<div class="full-divider"></div>
+
+<!-- FRANCHISES -->
+<section class="section" id="franchises">
+  <div class="section-header reveal">
+    <span class="section-label">04</span>
+    <h2 class="section-title">Most Acclaimed Franchises</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="franchise-layout reveal">
+    <!-- Ranked list -->
+    <div>
+      <div class="chart-card-sub" style="margin-bottom:16px;">RANKED BY NUMBER OF MUST-PLAY ENTRIES</div>
+      <div class="franchise-ranked-list" id="franchise-ranked-list"></div>
+    </div>
+    <!-- Chart -->
+    <div class="chart-card" style="padding: 24px;">
+      <div class="chart-card-title">Top 12 — Must-Play Count</div>
+      <div class="chart-card-sub">FRANCHISES WITH THE MOST ACCLAIMED TITLES</div>
+      <div class="chart-wrap" style="height:340px;">
+        <canvas id="chartFranchise"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header reveal" style="margin-top: 48px;">
+    <span class="section-label" style="color: var(--purple);">↳</span>
+    <h3 class="section-title" style="font-size: 1.3rem;">Franchise Detail</h3>
+    <div class="section-line"></div>
+  </div>
+  <div class="franchise-cards-grid reveal" id="franchise-cards"></div>
+</section>
+
+<div class="full-divider"></div>
+
+<!-- INSIGHTS -->
+<section class="section" id="insights">
+  <div class="section-header reveal">
+    <span class="section-label">05</span>
+    <h2 class="section-title">Data Insights</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="insights-grid reveal" id="insights-grid"></div>
+</section>
+
+<footer>
+  <p>Data scraped from <a href="https://metacritic.com" target="_blank">Metacritic</a> · MIT License · Updated weekly via GitHub Actions</p>
+  <p style="margin-top: 8px; opacity: 0.5;">Metacritic Must-Play Dataset · github.com</p>
+</footer>
+
+<div id="site-loading" style="display:none;position:fixed;inset:0;z-index:200;background:var(--bg);align-items:center;justify-content:center;flex-direction:column;gap:16px;">
+  <div style="width:40px;height:40px;border:2px solid var(--card-border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+  <span style="font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.15em;color:var(--text-dim);">LOADING DATA</span>
+</div>
+<div id="site-error" style="display:none;position:fixed;inset:0;z-index:200;background:var(--bg);align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:24px;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f5c518" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  <p style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--text);">Could not load dataset</p>
+  <p style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-dim);max-width:360px;">Serve this file from a web server or GitHub Pages — <code>fetch()</code> does not work over <code>file://</code></p>
+</div>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+
+<script>
+// ═══════════════════════════════════════════
+//  CSV LOADER
+// ═══════════════════════════════════════════
+function parseCSV(text) {
+  const lines = text.split('\n').filter(l => l.trim() && !l.startsWith('#'));
+  const [, ...rows] = lines; // skip header row
+  return rows.map(row => {
+    const parts = row.split(',');
+    if (parts.length < 4) return null;
+    return {
+      rank:  parts[0],
+      title: parts.slice(1, -2).join(','),
+      date:  parts[parts.length - 2],
+      score: parseInt(parts[parts.length - 1], 10),
+    };
+  }).filter(g => g && g.title && !isNaN(g.score));
+}
+
+async function main() {
+  const loadingEl = document.getElementById('site-loading');
+  const errorEl   = document.getElementById('site-error');
+  loadingEl.style.display = 'flex';
+
+  let GAMES;
+  try {
+    const res = await fetch('data/latest.csv');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    GAMES = parseCSV(await res.text());
+    if (!GAMES.length) throw new Error('Empty dataset');
+  } catch (e) {
+    loadingEl.style.display = 'none';
+    errorEl.style.display = 'flex';
+    console.error('Failed to load CSV:', e);
+    return;
+  }
+  loadingEl.style.display = 'none';
+
+
+// ═══════════════════════════════════════════
+//  COMPUTE STATS
+// ═══════════════════════════════════════════
+function getYear(d) { return parseInt(d.substring(0,4)); }
+function getDecade(d) { return Math.floor(getYear(d)/10)*10; }
+
+const totalGames = GAMES.length;
+const avgScore = (GAMES.reduce((s,g)=>s+g.score,0)/totalGames).toFixed(1);
+
+// by year
+const byYear = {};
+GAMES.forEach(g => { const y=getYear(g.date); byYear[y]=(byYear[y]||0)+1; });
+const years = Object.keys(byYear).map(Number).sort((a,b)=>a-b);
+const peakYear = years.reduce((a,b)=>byYear[a]>=byYear[b]?a:b, years[0]);
+
+// by score
+const byScore = {};
+GAMES.forEach(g => { byScore[g.score]=(byScore[g.score]||0)+1; });
+
+// by decade
+const byDecade = {};
+GAMES.forEach(g => { const d=getDecade(g.date); byDecade[d]=(byDecade[d]||0)+1; });
+
+// recent (2020+)
+const recent = GAMES.filter(g=>getYear(g.date)>=2020);
+const recentByYear = {};
+recent.forEach(g=>{ const y=getYear(g.date); if(!recentByYear[y]) recentByYear[y]=[]; recentByYear[y].push(g); });
+
+// derived values
+const firstYear = years[0];
+const lastYear  = years[years.length - 1];
+const minScore  = Math.min(...GAMES.map(g => g.score));
+const maxScore  = Math.max(...GAMES.map(g => g.score));
+const bestGame  = GAMES.reduce((a, b) => b.score > a.score ? b : a);
+const bestYear  = getYear(bestGame.date);
+
+// update DOM — hero
+document.getElementById('hero-total').textContent      = totalGames;
+document.getElementById('hero-score-range').textContent = `${minScore}–${maxScore}`;
+document.getElementById('hero-first-year').textContent  = firstYear;
+document.getElementById('hero-avg').textContent         = avgScore;
+
+// update DOM — KPIs
+document.getElementById('kpi-best-score').textContent  = bestGame.score;
+document.getElementById('kpi-best-game').textContent    = `${bestGame.title} (${bestYear})`;
+document.getElementById('kpi-peak-year').textContent    = peakYear;
+document.getElementById('kpi-peak-count').textContent   = `${byYear[peakYear]} must-plays released`;
+document.getElementById('kpi-years-spanned').textContent = lastYear - firstYear + 1;
+document.getElementById('kpi-year-range').textContent   = `${firstYear} → ${lastYear}`;
+document.getElementById('kpi-score90-count').textContent = byScore[minScore] || 0;
+document.getElementById('kpi-2020-count').textContent   = recent.length;
+
+// update DOM — chart subtitles
+document.getElementById('chart-year-sub').textContent = `COUNT OF GAMES ACHIEVING ${minScore}+ METASCORE · ${firstYear}–${lastYear}`;
+
+// ═══════════════════════════════════════════
+//  CHART.JS GLOBAL CONFIG
+// ═══════════════════════════════════════════
+Chart.defaults.color = 'rgba(232,232,240,0.45)';
+Chart.defaults.font.family = "'DM Mono', monospace";
+Chart.defaults.font.size = 11;
+
+const GOLD = '#f5c518';
+const PURPLE = '#6c63ff';
+const GOLD_A = (a) => `rgba(245,197,24,${a})`;
+const PURPLE_A = (a) => `rgba(108,99,255,${a})`;
+
+// ─── Year Chart ───
+(function() {
+  const allYears = [];
+  for(let y=firstYear;y<=lastYear;y++) allYears.push(y);
+  const counts = allYears.map(y=>byYear[y]||0);
+
+  const ctx = document.getElementById('chartYear').getContext('2d');
+  const grad = ctx.createLinearGradient(0, 0, 0, 280);
+  grad.addColorStop(0, GOLD_A(0.8));
+  grad.addColorStop(1, GOLD_A(0.05));
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: allYears,
+      datasets: [{
+        data: counts,
+        backgroundColor: allYears.map(y => y===peakYear ? GOLD : GOLD_A(0.35)),
+        borderColor: allYears.map(y => y===peakYear ? GOLD : GOLD_A(0.6)),
+        borderWidth: 1,
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#12121a',
+          borderColor: GOLD_A(0.3),
+          borderWidth: 1,
+          titleColor: GOLD,
+          bodyColor: 'rgba(232,232,240,0.8)',
+          callbacks: {
+            title: i => `${i[0].label}`,
+            label: i => ` ${i.raw} must-play${i.raw!==1?'s':''}`,
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { maxRotation: 45 }
+        },
+        y: {
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          beginAtZero: true,
+          ticks: { stepSize: 5 }
+        }
+      }
+    }
+  });
+})();
+
+// ─── Score Distribution ───
+(function() {
+  const scores = [];
+  for(let s=minScore;s<=maxScore;s++) scores.push(s);
+  const counts = scores.map(s=>byScore[s]||0);
+  const colors = scores.map(s=>{
+    if(s>=97) return GOLD;
+    if(s>=95) return GOLD_A(0.7);
+    if(s>=93) return PURPLE;
+    return PURPLE_A(0.6);
+  });
+
+  const ctx = document.getElementById('chartScore').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: scores.map(s=>`${s}`),
+      datasets: [{
+        data: counts,
+        backgroundColor: colors,
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'y',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#12121a',
+          borderColor: GOLD_A(0.3),
+          borderWidth: 1,
+          titleColor: GOLD,
+          bodyColor: 'rgba(232,232,240,0.8)',
+          callbacks: {
+            title: i => `Metascore ${i[0].label}`,
+            label: i => ` ${i.raw} games`,
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+})();
+
+// ─── Decade Donut ───
+(function() {
+  const decades = [1990,2000,2010,2020];
+  const labels = ['1990s','2000s','2010s','2020s'];
+  const counts = decades.map(d=>byDecade[d]||0);
+
+  const ctx = document.getElementById('chartDecade').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data: counts,
+        backgroundColor: [PURPLE_A(0.7), GOLD_A(0.8), GOLD_A(0.5), PURPLE_A(0.5)],
+        borderColor: ['#0a0a0f'],
+        borderWidth: 3,
+        hoverOffset: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '62%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { padding: 16, usePointStyle: true, pointStyleWidth: 8, color: 'rgba(232,232,240,0.6)' }
+        },
+        tooltip: {
+          backgroundColor: '#12121a',
+          borderColor: GOLD_A(0.3),
+          borderWidth: 1,
+          titleColor: GOLD,
+          bodyColor: 'rgba(232,232,240,0.8)',
+          callbacks: {
+            label: i => ` ${i.raw} games (${((i.raw/totalGames)*100).toFixed(1)}%)`
+          }
+        }
+      }
+    }
+  });
+})();
+
+// ═══════════════════════════════════════════
+//  TOP 20 LIST
+// ═══════════════════════════════════════════
+(function() {
+  const top20 = GAMES.slice(0, 20);
+  const container = document.getElementById('top20-list');
+  top20.forEach((g, i) => {
+    const n = i+1;
+    const rowClass = n===1?'gold-row':n===2?'silver-row':n===3?'bronze-row':'';
+    const rankClass = n===1?'rank-1':n===2?'rank-2':n===3?'rank-3':'';
+    const scoreClass = g.score>=99?'score-99':g.score>=98?'score-98':g.score>=97?'score-97':g.score>=96?'score-96':'score-lo';
+    const year = getYear(g.date);
+    container.innerHTML += `
+      <div class="top-item ${rowClass}">
+        <div class="top-rank ${rankClass}">#${n}</div>
+        <div>
+          <div class="top-title">${g.title}</div>
+          <div class="top-year">${year}</div>
+        </div>
+        <div class="score-pill ${scoreClass}">${g.score}</div>
+      </div>
+    `;
+  });
+})();
+
+// ═══════════════════════════════════════════
+//  RECENT GAMES
+// ═══════════════════════════════════════════
+(function() {
+  const container = document.getElementById('recent-container');
+  const sortedYears = Object.keys(recentByYear).map(Number).sort((a,b)=>b-a);
+
+  sortedYears.forEach(year => {
+    const games = recentByYear[year].sort((a,b)=>b.score-a.score);
+    const best = games[0];
+    let html = `<div class="year-block reveal"><div class="year-label">${year}</div><div class="recent-grid">`;
+    games.forEach((g, i) => {
+      const isGoty = i===0;
+      const d = new Date(g.date);
+      const dateStr = d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      html += `
+        <div class="recent-card ${isGoty?'goty':''}">
+          <div class="recent-score">${g.score}</div>
+          <div class="recent-title">${g.title}</div>
+          <div class="recent-date">${dateStr}</div>
+        </div>
+      `;
+    });
+    html += `</div></div>`;
+    container.innerHTML += html;
+  });
+})();
+
+// ═══════════════════════════════════════════
+//  FRANCHISES — generic series extraction
+// ═══════════════════════════════════════════
+let franchisesData = [];
+(function() {
+  // Derive a series name from a game title algorithmically.
+  // Steps (applied in order):
+  //   1. Split on ': ' — take the part before the first subtitle
+  //   2. Split on ' - ' — take the part before the first dash clause
+  //   3. Strip trailing parenthetical, e.g. (2000) or (Remake)
+  //   4. Strip a roman numeral AND any words that follow it at the end
+  //      e.g. "Final Fantasy VII Rebirth" → "Final Fantasy"
+  //           "Metal Gear Solid V" → "Metal Gear Solid"
+  //   5. Strip a trailing arabic number
+  //   6. Strip trailing edition/variant markers
+  //      e.g. "Metroid Prime Remastered" → "Metroid Prime"
+  //           "The Last of Us Part" → "The Last of Us"
+  //   Titles that collapse to <3 chars fall back to the original.
+  function seriesName(title) {
+    let s = title
+      .split(/:\s+/)[0]
+      .split(/\s+[-–]\s+/)[0]
+      .replace(/\s*\([^)]*\)\s*$/, '')
+      .trim();
+    // Strip roman numeral + any following subtitle words
+    s = s.replace(/\s+(?:XIV|XIII|XII|XI|IX|VIII|VII|VI|IV|III|II|XV|XVI|XVII|XVIII|XIX|XX|V|X|I)(?:\s+\S+)*$/i, '').trim();
+    // Strip trailing arabic number
+    s = s.replace(/\s+\d+$/, '').trim();
+    // Strip trailing edition / collection / variant markers
+    s = s.replace(/\s+(?:Remastered|Remake|HD|Definitive|Classic|Anthology|Complete|Trilogy|Collection|Anniversary|Deluxe|Plus|Black|Gold|Part)(?:\s+Edition)?$/i, '').trim();
+    return s.length >= 3 ? s : title;
+  }
+
+  // Group all games by derived series name
+  const groups = {};
+  GAMES.forEach(g => {
+    const key = seriesName(g.title);
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(g);
+  });
+
+  // Keep only series with 2+ games; compute stats
+  const data = Object.entries(groups)
+    .filter(([, gs]) => gs.length >= 2)
+    .map(([name, gs]) => {
+      gs.sort((a, b) => b.score - a.score);
+      const avg = (gs.reduce((s, g) => s + g.score, 0) / gs.length).toFixed(1);
+      return { name, games: gs, count: gs.length, avg: parseFloat(avg), best: gs[0].score };
+    })
+    .sort((a, b) => b.count - a.count || b.avg - a.avg);
+
+  franchisesData = data;
+  const top15 = data.slice(0, 15);
+  const top12 = data.slice(0, 12);
+
+  // ── Ranked list ──
+  const listEl = document.getElementById('franchise-ranked-list');
+  top15.forEach((f, i) => {
+    const n = i + 1;
+    const rowCls = n===1?'fr-gold':n===2?'fr-silver':n===3?'fr-bronze':'';
+    const rankCls = n===1?'r1':n===2?'r2':n===3?'r3':'';
+    const initial = f.name.charAt(0).toUpperCase();
+    listEl.innerHTML += `
+      <div class="franchise-row ${rowCls}">
+        <span class="fr-rank ${rankCls}">#${n}</span>
+        <span class="fr-icon"><span class="fr-initial">${initial}</span></span>
+        <span class="fr-name">${f.name}</span>
+        <span class="fr-avg">avg ${f.avg}</span>
+        <span class="fr-count">${f.count} games</span>
+      </div>`;
+  });
+
+  // ── Bar Chart ──
+  const ctx = document.getElementById('chartFranchise').getContext('2d');
+  const colors = top12.map((_, i) => {
+    const t = i / (top12.length - 1);
+    const r = Math.round(245 - t * (245 - 108));
+    const g2 = Math.round(197 - t * (197 - 99));
+    const b = Math.round(24 + t * (255 - 24));
+    return `rgba(${r},${g2},${b},${0.85 - t * 0.3})`;
+  });
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: top12.map(f => f.name),
+      datasets: [{
+        data: top12.map(f => f.count),
+        backgroundColor: colors,
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'y',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#12121a',
+          borderColor: GOLD_A(0.3),
+          borderWidth: 1,
+          titleColor: GOLD,
+          bodyColor: 'rgba(232,232,240,0.8)',
+          callbacks: {
+            title: i => i[0].label,
+            label: i => {
+              const f = top12[i.dataIndex];
+              return ` ${i.raw} games · avg ${f.avg} · best: ${f.best}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          beginAtZero: true,
+          ticks: { stepSize: 2 }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { font: { size: 11 }, color: 'rgba(232,232,240,0.6)' }
+        }
+      }
+    }
+  });
+
+  // ── Franchise Cards ──
+  const cardsEl = document.getElementById('franchise-cards');
+  data.slice(0, 15).forEach(f => {
+    const initial = f.name.charAt(0).toUpperCase();
+    const games_html = f.games.map(g =>
+      `<div class="fc-game-row">
+        <span class="fc-game-title">${g.title}</span>
+        <span class="fc-game-score">${g.score}</span>
+      </div>`
+    ).join('');
+
+    cardsEl.innerHTML += `
+      <div class="franchise-card">
+        <div class="fc-header">
+          <div class="fc-initial-badge">${initial}</div>
+          <span class="fc-title">${f.name}</span>
+        </div>
+        <div class="fc-meta">
+          <div class="fc-stat">
+            <div class="fc-stat-val">${f.count}</div>
+            <div class="fc-stat-lbl">Games</div>
+          </div>
+          <div class="fc-sep"></div>
+          <div class="fc-stat">
+            <div class="fc-stat-val">${f.avg}</div>
+            <div class="fc-stat-lbl">Avg</div>
+          </div>
+          <div class="fc-sep"></div>
+          <div class="fc-stat">
+            <div class="fc-stat-val">${f.best}</div>
+            <div class="fc-stat-lbl">Best</div>
+          </div>
+        </div>
+        <div class="fc-games">${games_html}</div>
+      </div>`;
+  });
+})();
+
+// ═══════════════════════════════════════════
+//  INSIGHTS
+// ═══════════════════════════════════════════
+(function() {
+  // densest year
+  const denseYear = years.reduce((a,b)=>byYear[a]>=byYear[b]?a:b, years[0]);
+
+  // rarest score: among the top-25% of scores (above midpoint), find the one with fewest games
+  const midScore = Math.round((minScore + maxScore) / 2);
+  const topScoreBands = Object.keys(byScore).map(Number).filter(s => s > midScore);
+  const rarestScore = topScoreBands.length
+    ? topScoreBands.reduce((a,b) => (byScore[a]||0) <= (byScore[b]||0) ? a : b)
+    : maxScore;
+
+  // hottest decade: decade with most games
+  const hotDecade = Object.keys(byDecade).map(Number).reduce((a,b)=>byDecade[a]>=byDecade[b]?a:b);
+
+  // oldest game
+  const oldest = GAMES.reduce((a,b)=>a.date<b.date?a:b);
+
+  // top franchise by count
+  const topFranchise = franchisesData[0] || null;
+
+  // top franchise by avg score (among those with 3+ games)
+  const topAvgFranchise = franchisesData.filter(f=>f.count>=3).reduce((a,b)=>a.avg>=b.avg?a:b, franchisesData[0]||{name:'—',avg:0,count:0});
+
+  // threshold — % at lowest score band
+  const thresholdPct = byScore[minScore] ? ((byScore[minScore]/totalGames)*100).toFixed(0) : 0;
+
+  const insightData = [
+    {
+      icon:'calendar-check', value:`${denseYear}`,
+      label:'Densest Year',
+      desc:`${byYear[denseYear]} must-play games released in ${denseYear} — the single richest year in critical gaming history.`
+    },
+    {
+      icon:'gem', value:`Score ${rarestScore}`,
+      label:'Rarest Score',
+      desc:`Only ${byScore[rarestScore]} game${byScore[rarestScore]>1?'s':''} reached a ${rarestScore} — the most exclusive tier in the dataset.`
+    },
+    {
+      icon:'layers', value: topFranchise ? `${topFranchise.count} entries` : '—',
+      label: topFranchise ? `#1 Franchise: ${topFranchise.name}` : 'Top Franchise',
+      desc: topFranchise ? `${topFranchise.name} leads all series with ${topFranchise.count} must-play titles and an average score of ${topFranchise.avg}.` : 'No franchise data.'
+    },
+    {
+      icon:'star', value: topAvgFranchise.name !== '—' ? `Avg ${topAvgFranchise.avg}` : '—',
+      label: `Highest Avg: ${topAvgFranchise.name}`,
+      desc: `Among series with 3+ entries, ${topAvgFranchise.name} holds the highest average Metascore at ${topAvgFranchise.avg} across ${topAvgFranchise.count} games.`
+    },
+    {
+      icon:'flame', value:`${hotDecade}s`,
+      label:'Hottest Decade',
+      desc:`The ${hotDecade}s produced ${byDecade[hotDecade]} must-play titles — more than any other decade.`
+    },
+    {
+      icon:'clock', value:`${oldest.title.length > 22 ? oldest.title.slice(0,20)+'…' : oldest.title}`,
+      label:'Oldest Entry',
+      desc:`${oldest.title} (${getYear(oldest.date)}) is the earliest game in the dataset, with a Metascore of ${oldest.score}.`
+    },
+    {
+      icon:'bar-chart-2', value:`${thresholdPct}%`,
+      label:'At the Threshold',
+      desc:`${thresholdPct}% of all must-plays scored exactly ${minScore} — the entry bar is narrow but real.`
+    },
+    {
+      icon:'sparkles', value:`${recent.length} games`,
+      label:'Modern Era',
+      desc:`${recent.length} must-plays since 2020 — the golden age of gaming isn't over.`
+    },
+  ];
+
+  const container = document.getElementById('insights-grid');
+  insightData.forEach(ins => {
+    container.innerHTML += `
+      <div class="insight-card">
+        <div class="insight-chip"><i data-lucide="${ins.icon}"></i></div>
+        <div class="insight-body">
+          <div class="insight-value">${ins.value}</div>
+          <div class="insight-label">${ins.label}</div>
+          <div class="insight-desc">${ins.desc}</div>
+        </div>
+      </div>
+    `;
+  });
+})();
+
+// ═══════════════════════════════════════════
+//  LUCIDE ICONS
+// ═══════════════════════════════════════════
+lucide.createIcons();
+
+// ═══════════════════════════════════════════
+//  INTERSECTION OBSERVER — REVEAL
+// ═══════════════════════════════════════════
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+} // ── end main() ──
+
+main();
+</script>
+</body>
+</html>
