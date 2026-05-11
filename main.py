@@ -82,15 +82,19 @@ async def fetch_page_async(
                     await asyncio.sleep(random.uniform(delay, delay + 1))
                     return text
                 if resp.status in (429, 500, 502, 503, 504) and attempt < retries:
-                    wait = 2 ** attempt + random.uniform(0, 1)
-                    print(f"⚠️  {url} — HTTP {resp.status}, tentativa {attempt}/{retries}, aguardando {wait:.1f}s")
+                    wait = 2**attempt + random.uniform(0, 1)
+                    print(
+                        f"⚠️  {url} — HTTP {resp.status}, tentativa {attempt}/{retries}, aguardando {wait:.1f}s"
+                    )
                     await asyncio.sleep(wait)
                     continue
                 print(f"⚠️  {url} — HTTP {resp.status} {elapsed:.2f}s")
         except aiohttp.ClientError as exc:
             if attempt < retries:
-                wait = 2 ** attempt + random.uniform(0, 1)
-                print(f"⚠️  {url} — ERRO {exc}, tentativa {attempt}/{retries}, aguardando {wait:.1f}s")
+                wait = 2**attempt + random.uniform(0, 1)
+                print(
+                    f"⚠️  {url} — ERRO {exc}, tentativa {attempt}/{retries}, aguardando {wait:.1f}s"
+                )
                 await asyncio.sleep(wait)
                 continue
             print(f"⚠️  {url} — ERRO {exc}")
@@ -103,7 +107,8 @@ def parse_games(html: str, page_idx: int) -> List[Game]:
     # New Metacritic layout uses Tailwind utility classes instead of BEM identifiers.
     # Cards are <a> tags with the grid-cols utility that defines the cover+info layout.
     cards = [
-        a for a in soup.find_all("a")
+        a
+        for a in soup.find_all("a")
         if "grid-cols-[5.5rem_auto]" in " ".join(a.get("class", []))
     ]
     print(f"   🔍 {len(cards)} cartões totais na página {page_idx}")
@@ -115,9 +120,15 @@ def parse_games(html: str, page_idx: int) -> List[Game]:
 
         # Spans without classes hold rank, title, and date in DOM order.
         plain_spans = [s for s in card.find_all("span") if not s.get("class")]
-        rank_text = plain_spans[0].get_text(strip=True) if len(plain_spans) > 0 else None
-        title_text = plain_spans[1].get_text(strip=True) if len(plain_spans) > 1 else None
-        date_text = plain_spans[2].get_text(strip=True) if len(plain_spans) > 2 else None
+        rank_text = (
+            plain_spans[0].get_text(strip=True) if len(plain_spans) > 0 else None
+        )
+        title_text = (
+            plain_spans[1].get_text(strip=True) if len(plain_spans) > 1 else None
+        )
+        date_text = (
+            plain_spans[2].get_text(strip=True) if len(plain_spans) > 2 else None
+        )
 
         score_elem = card.select_one(".c-siteReviewScore span")
 
