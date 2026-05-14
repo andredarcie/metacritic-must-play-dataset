@@ -102,7 +102,7 @@ async def fetch_page_async(
     return None
 
 
-def parse_games(html: str, page_idx: int) -> List[Game]:
+def parse_games(html: str, page_idx: int) -> tuple[List[Game], int]:
     soup = BeautifulSoup(html, "html.parser")
     # New Metacritic layout uses Tailwind utility classes instead of BEM identifiers.
     # Cards are <a> tags with the grid-cols utility that defines the cover+info layout.
@@ -167,7 +167,7 @@ def parse_games(html: str, page_idx: int) -> List[Game]:
             f"MS {game.metascore or '?'}"
         )
     print(f"   ✔️  {len(games)} must-plays filtrados na página {page_idx}\n")
-    return games
+    return games, len(cards)
 
 
 def _browse_url(page: int) -> str:
@@ -191,9 +191,9 @@ def scrape_games(start: int, end: int, delay: float = 1.0) -> List[Game]:
             print("   ⤬ Página ignorada\n")
             continue
 
-        games = parse_games(html, page)
+        games, total_cards = parse_games(html, page)
         if not games:
-            print("   ⤬ Nenhum must-play, encerrando loop.\n")
+            print("   ⤬ Nenhum must-play — fim da lista.\n")
             break
 
         all_games.extend(games)
@@ -207,34 +207,40 @@ def scrape_games(start: int, end: int, delay: float = 1.0) -> List[Game]:
 async def scrape_games_async(
     start: int, end: int, delay: float = 1.0, concurrency: int = 5
 ) -> List[Game]:
-    """Fetch multiple pages concurrently respecting the delay."""
+    """Fetch pages in batches, stopping when a batch returns no cards."""
     print("🚀 Scraping Metacritic Must-Play — parâmetros:")
     print(
         f"    páginas {start}-{end}, delay base {delay}s, concurrency {concurrency}\n"
     )
 
+    all_games: List[Game] = []
     connector = aiohttp.TCPConnector(limit=concurrency)
     async with aiohttp.ClientSession(connector=connector) as session:
-        tasks = []
-        for page in range(start, end + 1):
-            print(f"➡️  PÁGINA {page}")
-            tasks.append(fetch_page_async(session, _browse_url(page), delay))
+        page = start
+        while page <= end:
+            batch = list(range(page, min(page + concurrency, end + 1)))
+            tasks = [fetch_page_async(session, _browse_url(p), delay) for p in batch]
+            html_pages = await asyncio.gather(*tasks)
 
-        html_pages = await asyncio.gather(*tasks)
+            done = False
+            for page_idx, html in zip(batch, html_pages):
+                print(f"➡️  PÁGINA {page_idx}")
+                if not html:
+                    print("   ⤬ Página ignorada\n")
+                    continue
 
-    all_games: List[Game] = []
-    for page_idx, html in enumerate(html_pages, start):
-        if not html:
-            print("   ⤬ Página ignorada\n")
-            continue
+                games, total_cards = parse_games(html, page_idx)
+                if not games:
+                    print("   ⤬ Nenhum must-play — fim da lista.\n")
+                    done = True
+                    break
 
-        games = parse_games(html, page_idx)
-        if not games:
-            print("   ⤬ Nenhum must-play, encerrando loop.\n")
-            break
+                all_games.extend(games)
+                print(f"   📊 Total acumulado: {len(all_games)} jogos\n")
 
-        all_games.extend(games)
-        print(f"   📊 Total acumulado: {len(all_games)} jogos\n")
+            if done:
+                break
+            page += concurrency
 
     print("✅ Scraping finalizado.\n")
     return all_games
@@ -264,7 +270,7 @@ def save_csv(games: Iterable[Game], filename: str) -> None:
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--start", type=int, default=1, help="Primeira página (inclusive).")
-    p.add_argument("--end", type=int, default=16, help="Última página (inclusive).")
+    p.add_argument("--end", type=int, default=999, help="Última página (inclusive); o scraper para sozinho ao esgotar os cards.")
     p.add_argument(
         "--output",
         type=str,

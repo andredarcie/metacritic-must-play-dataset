@@ -113,17 +113,17 @@ Each row represents one must-play game:
 | `metascore` | integer | `99` |
 
 <!-- STATS_START -->
-🎮 **Total must-play games:** 337
+🎮 **Total must-play games:** 338
 
 ### Games by decade
 1990: 26
 2000: 180
 2010: 87
-2020: 44
+2020: 45
 
 ### Top 5 years (most must-plays)
-2001: 25
-2000: 25
+2001: 26
+2000: 24
 2002: 21
 2003: 20
 2007: 18
@@ -131,7 +131,7 @@ Each row represents one must-play game:
 ### Metascore distribution
 90: 83
 91: 64
-92: 61
+92: 62
 93: 45
 94: 35
 95: 17
@@ -144,9 +144,9 @@ Each row represents one must-play game:
 - GoldenEye 007 (1997-08-25) — Metascore 96
 
 ### Newest must-play game
-- Hades II (2025-09-25) — Metascore 95
+- Forza Horizon 6 (2026-05-19) — Metascore 92
 
-### Must-plays released 2020+ (44)
+### Must-plays released 2020+ (45)
 #### 2020
 - **Persona 5 Royal** (2020-03-31) — Metascore: 95 🌟 *Possible GOTY*
 - **The Last of Us Part II** (2020-06-19) — Metascore: 93
@@ -188,8 +188,8 @@ Each row represents one must-play game:
 - **Final Fantasy VII Rebirth** (2024-02-29) — Metascore: 92
 - **UFO 50** (2024-09-18) — Metascore: 91
 - **Satisfactory** (2024-09-10) — Metascore: 91
-- **Balatro** (2024-02-20) — Metascore: 90
 - **Animal Well** (2024-05-09) — Metascore: 90
+- **Balatro** (2024-02-20) — Metascore: 90
 - **The Last of Us Part II Remastered** (2024-01-19) — Metascore: 90
 - **Tekken 8** (2024-01-26) — Metascore: 90
 
@@ -203,7 +203,12 @@ Each row represents one must-play game:
 - **Donkey Kong Bananza** (2025-07-17) — Metascore: 91
 - **Hollow Knight: Silksong** (2025-09-04) — Metascore: 90
 
+#### 2026
+- **Forza Horizon 6** (2026-05-19) — Metascore: 92 🌟 *Possible GOTY*
+
 <!-- STATS_END -->
+
+
 
 
 
