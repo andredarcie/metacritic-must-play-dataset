@@ -122,11 +122,11 @@ Each row represents one must-play game:
 2020: 45
 
 ### Top 5 years (most must-plays)
-2001: 26
+2001: 25
 2000: 24
 2002: 21
 2003: 20
-2007: 18
+2004: 19
 
 ### Metascore distribution
 90: 83
@@ -207,6 +207,7 @@ Each row represents one must-play game:
 - **Forza Horizon 6** (2026-05-19) — Metascore: 92 🌟 *Possible GOTY*
 
 <!-- STATS_END -->
+
 
 
 
