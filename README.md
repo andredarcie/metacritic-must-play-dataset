@@ -123,15 +123,15 @@ Each row represents one must-play game:
 
 ### Top 5 years (most must-plays)
 2001: 25
-2000: 24
+2000: 25
 2002: 21
 2003: 20
-2004: 19
+2007: 18
 
 ### Metascore distribution
 90: 83
-91: 64
-92: 62
+91: 65
+92: 61
 93: 45
 94: 35
 95: 17
@@ -144,7 +144,7 @@ Each row represents one must-play game:
 - GoldenEye 007 (1997-08-25) — Metascore 96
 
 ### Newest must-play game
-- Forza Horizon 6 (2026-05-19) — Metascore 92
+- Forza Horizon 6 (2026-05-19) — Metascore 91
 
 ### Must-plays released 2020+ (45)
 #### 2020
@@ -204,9 +204,10 @@ Each row represents one must-play game:
 - **Hollow Knight: Silksong** (2025-09-04) — Metascore: 90
 
 #### 2026
-- **Forza Horizon 6** (2026-05-19) — Metascore: 92 🌟 *Possible GOTY*
+- **Forza Horizon 6** (2026-05-19) — Metascore: 91 🌟 *Possible GOTY*
 
 <!-- STATS_END -->
+
 
 
 
