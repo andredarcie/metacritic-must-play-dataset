@@ -130,8 +130,8 @@ Each row represents one must-play game:
 
 ### Metascore distribution
 90: 83
-91: 65
-92: 62
+91: 66
+92: 61
 93: 45
 94: 35
 95: 17
@@ -144,7 +144,7 @@ Each row represents one must-play game:
 - GoldenEye 007 (1997-08-25) — Metascore 96
 
 ### Newest must-play game
-- Mina the Hollower (2026-05-29) — Metascore 92
+- Mina the Hollower (2026-05-29) — Metascore 91
 
 ### Must-plays released 2020+ (46)
 #### 2020
@@ -204,10 +204,11 @@ Each row represents one must-play game:
 - **Hollow Knight: Silksong** (2025-09-04) — Metascore: 90
 
 #### 2026
-- **Mina the Hollower** (2026-05-29) — Metascore: 92 🌟 *Possible GOTY*
+- **Mina the Hollower** (2026-05-29) — Metascore: 91 🌟 *Possible GOTY*
 - **Forza Horizon 6** (2026-05-19) — Metascore: 91
 
 <!-- STATS_END -->
+
 
 
 
