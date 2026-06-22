@@ -122,29 +122,29 @@ Each row represents one must-play game:
 2020: 46
 
 ### Top 5 years (most must-plays)
-2001: 25
 2000: 25
+2001: 25
 2002: 21
 2003: 20
 2007: 18
 
 ### Metascore distribution
-90: 83
-91: 66
+90: 84
+91: 65
 92: 61
 93: 45
 94: 35
 95: 17
 96: 17
-97: 12
-98: 2
+97: 11
+98: 3
 99: 1
 
 ### Oldest must-play game
 - GoldenEye 007 (1997-08-25) — Metascore 96
 
 ### Newest must-play game
-- Mina the Hollower (2026-05-29) — Metascore 91
+- Mina the Hollower (2026-05-29) — Metascore 90
 
 ### Must-plays released 2020+ (46)
 #### 2020
@@ -188,8 +188,8 @@ Each row represents one must-play game:
 - **Final Fantasy VII Rebirth** (2024-02-29) — Metascore: 92
 - **UFO 50** (2024-09-18) — Metascore: 91
 - **Satisfactory** (2024-09-10) — Metascore: 91
-- **Balatro** (2024-02-20) — Metascore: 90
 - **Animal Well** (2024-05-09) — Metascore: 90
+- **Balatro** (2024-02-20) — Metascore: 90
 - **The Last of Us Part II Remastered** (2024-01-19) — Metascore: 90
 - **Tekken 8** (2024-01-26) — Metascore: 90
 
@@ -204,10 +204,11 @@ Each row represents one must-play game:
 - **Hollow Knight: Silksong** (2025-09-04) — Metascore: 90
 
 #### 2026
-- **Mina the Hollower** (2026-05-29) — Metascore: 91 🌟 *Possible GOTY*
-- **Forza Horizon 6** (2026-05-19) — Metascore: 91
+- **Forza Horizon 6** (2026-05-19) — Metascore: 91 🌟 *Possible GOTY*
+- **Mina the Hollower** (2026-05-29) — Metascore: 90
 
 <!-- STATS_END -->
+
 
 
 
