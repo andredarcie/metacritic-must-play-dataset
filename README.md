@@ -113,13 +113,13 @@ Each row represents one must-play game:
 | `metascore` | integer | `99` |
 
 <!-- STATS_START -->
-🎮 **Total must-play games:** 341
+🎮 **Total must-play games:** 339
 
 ### Games by decade
 1990: 26
 2000: 180
-2010: 88
-2020: 47
+2010: 87
+2020: 46
 
 ### Top 5 years (most must-plays)
 2000: 25
@@ -129,7 +129,7 @@ Each row represents one must-play game:
 2007: 18
 
 ### Metascore distribution
-90: 87
+90: 85
 91: 64
 92: 61
 93: 45
@@ -146,7 +146,7 @@ Each row represents one must-play game:
 ### Newest must-play game
 - Mina the Hollower (2026-05-29) — Metascore 90
 
-### Must-plays released 2020+ (47)
+### Must-plays released 2020+ (46)
 #### 2020
 - **Persona 5 Royal** (2020-03-31) — Metascore: 95 🌟 *Possible GOTY*
 - **The Last of Us Part II** (2020-06-19) — Metascore: 93
@@ -188,8 +188,8 @@ Each row represents one must-play game:
 - **Final Fantasy VII Rebirth** (2024-02-29) — Metascore: 92
 - **UFO 50** (2024-09-18) — Metascore: 91
 - **Satisfactory** (2024-09-10) — Metascore: 91
-- **Balatro** (2024-02-20) — Metascore: 90
 - **Animal Well** (2024-05-09) — Metascore: 90
+- **Balatro** (2024-02-20) — Metascore: 90
 - **The Last of Us Part II Remastered** (2024-01-19) — Metascore: 90
 - **Tekken 8** (2024-01-26) — Metascore: 90
 
@@ -205,10 +205,10 @@ Each row represents one must-play game:
 
 #### 2026
 - **Forza Horizon 6** (2026-05-19) — Metascore: 90 🌟 *Possible GOTY*
-- **Schrodinger's Call** (2026-05-28) — Metascore: 90
 - **Mina the Hollower** (2026-05-29) — Metascore: 90
 
 <!-- STATS_END -->
+
 
 
 
