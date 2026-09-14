@@ -113,23 +113,23 @@ Each row represents one must-play game:
 | `metascore` | integer | `99` |
 
 <!-- STATS_START -->
-🎮 **Total must-play games:** 341
+🎮 **Total must-play games:** 342
 
 ### Games by decade
-1990: 26
-2000: 180
-2010: 86
-2020: 49
+1990: 27
+2000: 181
+2010: 84
+2020: 50
 
 ### Top 5 years (most must-plays)
+2000: 26
 2001: 25
-2000: 25
 2002: 21
 2003: 20
-2011: 19
+2007: 18
 
 ### Metascore distribution
-90: 85
+90: 86
 91: 66
 92: 61
 93: 45
@@ -144,9 +144,9 @@ Each row represents one must-play game:
 - GoldenEye 007 (1997-08-25) — Metascore 96
 
 ### Newest must-play game
-- Elden Ring: Tarnished Edition (2026-08-28) — Metascore 90
+- Valheim (2026-09-09) — Metascore 90
 
-### Must-plays released 2020+ (49)
+### Must-plays released 2020+ (50)
 #### 2020
 - **Persona 5 Royal** (2020-03-31) — Metascore: 95 🌟 *Possible GOTY*
 - **The Last of Us Part II** (2020-06-19) — Metascore: 93
@@ -188,8 +188,8 @@ Each row represents one must-play game:
 - **Final Fantasy VII Rebirth** (2024-02-29) — Metascore: 92
 - **UFO 50** (2024-09-18) — Metascore: 91
 - **Satisfactory** (2024-09-10) — Metascore: 91
-- **Balatro** (2024-02-20) — Metascore: 90
 - **Animal Well** (2024-05-09) — Metascore: 90
+- **Balatro** (2024-02-20) — Metascore: 90
 - **The Last of Us Part II Remastered** (2024-01-19) — Metascore: 90
 - **Tekken 8** (2024-01-26) — Metascore: 90
 
@@ -209,8 +209,10 @@ Each row represents one must-play game:
 - **Forza Horizon 6** (2026-05-19) — Metascore: 90
 - **Mina the Hollower** (2026-05-29) — Metascore: 90
 - **Elden Ring: Tarnished Edition** (2026-08-28) — Metascore: 90
+- **Valheim** (2026-09-09) — Metascore: 90
 
 <!-- STATS_END -->
+
 
 
 
