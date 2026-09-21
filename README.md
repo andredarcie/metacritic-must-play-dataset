@@ -113,12 +113,12 @@ Each row represents one must-play game:
 | `metascore` | integer | `99` |
 
 <!-- STATS_START -->
-🎮 **Total must-play games:** 342
+🎮 **Total must-play games:** 344
 
 ### Games by decade
-1990: 27
+1990: 26
 2000: 181
-2010: 84
+2010: 87
 2020: 50
 
 ### Top 5 years (most must-plays)
@@ -129,8 +129,8 @@ Each row represents one must-play game:
 2007: 18
 
 ### Metascore distribution
-90: 86
-91: 66
+90: 87
+91: 67
 92: 61
 93: 45
 94: 35
@@ -144,7 +144,7 @@ Each row represents one must-play game:
 - GoldenEye 007 (1997-08-25) — Metascore 96
 
 ### Newest must-play game
-- Valheim (2026-09-09) — Metascore 90
+- Trails in the Sky 2nd Chapter (2026-09-17) — Metascore 91
 
 ### Must-plays released 2020+ (50)
 #### 2020
@@ -188,8 +188,8 @@ Each row represents one must-play game:
 - **Final Fantasy VII Rebirth** (2024-02-29) — Metascore: 92
 - **UFO 50** (2024-09-18) — Metascore: 91
 - **Satisfactory** (2024-09-10) — Metascore: 91
-- **Animal Well** (2024-05-09) — Metascore: 90
 - **Balatro** (2024-02-20) — Metascore: 90
+- **Animal Well** (2024-05-09) — Metascore: 90
 - **The Last of Us Part II Remastered** (2024-01-19) — Metascore: 90
 - **Tekken 8** (2024-01-26) — Metascore: 90
 
@@ -204,14 +204,15 @@ Each row represents one must-play game:
 - **Hollow Knight: Silksong** (2025-09-04) — Metascore: 90
 
 #### 2026
-- **Big Walk** (2026-08-04) — Metascore: 91 🌟 *Possible GOTY*
+- **Trails in the Sky 2nd Chapter** (2026-09-17) — Metascore: 91 🌟 *Possible GOTY*
+- **Big Walk** (2026-08-04) — Metascore: 91
 - **DOOM: The Dark Ages - Revelations** (2026-07-07) — Metascore: 91
 - **Forza Horizon 6** (2026-05-19) — Metascore: 90
-- **Mina the Hollower** (2026-05-29) — Metascore: 90
 - **Elden Ring: Tarnished Edition** (2026-08-28) — Metascore: 90
-- **Valheim** (2026-09-09) — Metascore: 90
+- **Mina the Hollower** (2026-05-29) — Metascore: 90
 
 <!-- STATS_END -->
+
 
 
 
