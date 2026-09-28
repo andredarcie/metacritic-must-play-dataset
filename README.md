@@ -113,23 +113,23 @@ Each row represents one must-play game:
 | `metascore` | integer | `99` |
 
 <!-- STATS_START -->
-🎮 **Total must-play games:** 344
+🎮 **Total must-play games:** 345
 
 ### Games by decade
 1990: 26
 2000: 181
 2010: 87
-2020: 50
+2020: 51
 
 ### Top 5 years (most must-plays)
 2000: 26
-2001: 25
-2002: 21
+2001: 24
+2002: 22
 2003: 20
 2007: 18
 
 ### Metascore distribution
-90: 87
+90: 88
 91: 67
 92: 61
 93: 45
@@ -146,7 +146,7 @@ Each row represents one must-play game:
 ### Newest must-play game
 - Trails in the Sky 2nd Chapter (2026-09-17) — Metascore 91
 
-### Must-plays released 2020+ (50)
+### Must-plays released 2020+ (51)
 #### 2020
 - **Persona 5 Royal** (2020-03-31) — Metascore: 95 🌟 *Possible GOTY*
 - **The Last of Us Part II** (2020-06-19) — Metascore: 93
@@ -208,10 +208,12 @@ Each row represents one must-play game:
 - **Big Walk** (2026-08-04) — Metascore: 91
 - **DOOM: The Dark Ages - Revelations** (2026-07-07) — Metascore: 91
 - **Forza Horizon 6** (2026-05-19) — Metascore: 90
+- **Valheim** (2026-09-09) — Metascore: 90
 - **Elden Ring: Tarnished Edition** (2026-08-28) — Metascore: 90
 - **Mina the Hollower** (2026-05-29) — Metascore: 90
 
 <!-- STATS_END -->
+
 
 
 
