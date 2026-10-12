@@ -188,8 +188,8 @@ Each row represents one must-play game:
 - **Final Fantasy VII Rebirth** (2024-02-29) — Metascore: 92
 - **UFO 50** (2024-09-18) — Metascore: 91
 - **Satisfactory** (2024-09-10) — Metascore: 91
-- **Animal Well** (2024-05-09) — Metascore: 90
 - **Balatro** (2024-02-20) — Metascore: 90
+- **Animal Well** (2024-05-09) — Metascore: 90
 - **The Last of Us Part II Remastered** (2024-01-19) — Metascore: 90
 - **Tekken 8** (2024-01-26) — Metascore: 90
 
@@ -212,6 +212,7 @@ Each row represents one must-play game:
 - **Trails in the Sky 2nd Chapter** (2026-09-17) — Metascore: 90
 
 <!-- STATS_END -->
+
 
 
 
