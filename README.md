@@ -113,26 +113,26 @@ Each row represents one must-play game:
 | `metascore` | integer | `99` |
 
 <!-- STATS_START -->
-🎮 **Total must-play games:** 344
+🎮 **Total must-play games:** 324
 
 ### Games by decade
 1990: 26
-2000: 181
-2010: 87
-2020: 50
+2000: 173
+2010: 78
+2020: 47
 
 ### Top 5 years (most must-plays)
-2000: 26
-2001: 25
+2000: 24
+2001: 23
 2002: 21
-2003: 20
 2007: 18
+2003: 18
 
 ### Metascore distribution
 90: 88
 91: 66
-92: 61
-93: 45
+92: 58
+93: 28
 94: 35
 95: 17
 96: 17
@@ -146,12 +146,11 @@ Each row represents one must-play game:
 ### Newest must-play game
 - Trails in the Sky 2nd Chapter (2026-09-17) — Metascore 90
 
-### Must-plays released 2020+ (50)
+### Must-plays released 2020+ (47)
 #### 2020
 - **Persona 5 Royal** (2020-03-31) — Metascore: 95 🌟 *Possible GOTY*
 - **The Last of Us Part II** (2020-06-19) — Metascore: 93
 - **Half-Life: Alyx** (2020-03-23) — Metascore: 93
-- **Hades** (2020-09-17) — Metascore: 93
 - **Demon's Souls** (2020-11-11) — Metascore: 92
 - **Microsoft Flight Simulator** (2020-08-18) — Metascore: 91
 - **Crusader Kings III** (2020-09-01) — Metascore: 91
@@ -173,7 +172,6 @@ Each row represents one must-play game:
 - **Baldur's Gate 3** (2023-08-03) — Metascore: 96 🌟 *Possible GOTY*
 - **The Legend of Zelda: Tears of the Kingdom** (2023-05-12) — Metascore: 96
 - **Metroid Prime Remastered** (2023-02-08) — Metascore: 94
-- **Resident Evil 4** (2023-03-24) — Metascore: 93
 - **Super Mario Bros. Wonder** (2023-10-20) — Metascore: 92
 - **Street Fighter 6** (2023-06-02) — Metascore: 92
 - **Against the Storm** (2023-12-08) — Metascore: 91
@@ -197,7 +195,6 @@ Each row represents one must-play game:
 - **The Legend of Zelda: Tears of the Kingdom - Nintendo Switch 2 Edition** (2025-06-05) — Metascore: 95 🌟 *Possible GOTY*
 - **Hades II** (2025-09-25) — Metascore: 95
 - **The Legend of Zelda: Breath of the Wild - Nintendo Switch 2 Edition** (2025-06-05) — Metascore: 94
-- **Clair Obscur: Expedition 33** (2025-04-24) — Metascore: 92
 - **Blue Prince** (2025-04-10) — Metascore: 92
 - **Split Fiction** (2025-03-06) — Metascore: 91
 - **Donkey Kong Bananza** (2025-07-17) — Metascore: 91
@@ -212,6 +209,7 @@ Each row represents one must-play game:
 - **Trails in the Sky 2nd Chapter** (2026-09-17) — Metascore: 90
 
 <!-- STATS_END -->
+
 
 
 
