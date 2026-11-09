@@ -129,13 +129,13 @@ Each row represents one must-play game:
 2007: 18
 
 ### Metascore distribution
-90: 89
+90: 88
 91: 66
 92: 61
 93: 46
 94: 35
 95: 17
-96: 17
+96: 18
 97: 11
 98: 3
 99: 1
@@ -144,7 +144,7 @@ Each row represents one must-play game:
 - GoldenEye 007 (1997-08-25) — Metascore 96
 
 ### Newest must-play game
-- Resident Evil 4: Gold Edition (2026-10-16) — Metascore 90
+- The Legend of Zelda: Ocarina of Time (2026-11-05) — Metascore 96
 
 ### Must-plays released 2020+ (52)
 #### 2020
@@ -188,8 +188,8 @@ Each row represents one must-play game:
 - **Final Fantasy VII Rebirth** (2024-02-29) — Metascore: 92
 - **UFO 50** (2024-09-18) — Metascore: 91
 - **Satisfactory** (2024-09-10) — Metascore: 91
-- **Balatro** (2024-02-20) — Metascore: 90
 - **Animal Well** (2024-05-09) — Metascore: 90
+- **Balatro** (2024-02-20) — Metascore: 90
 - **The Last of Us Part II Remastered** (2024-01-19) — Metascore: 90
 - **Tekken 8** (2024-01-26) — Metascore: 90
 
@@ -204,16 +204,17 @@ Each row represents one must-play game:
 - **Hollow Knight: Silksong** (2025-09-04) — Metascore: 90
 
 #### 2026
-- **Resident Evil 2: Deluxe Edition** (2026-10-16) — Metascore: 93 🌟 *Possible GOTY*
+- **The Legend of Zelda: Ocarina of Time** (2026-11-05) — Metascore: 96 🌟 *Possible GOTY*
+- **Resident Evil 2: Deluxe Edition** (2026-10-16) — Metascore: 93
 - **Big Walk** (2026-08-04) — Metascore: 91
 - **DOOM: The Dark Ages - Revelations** (2026-07-07) — Metascore: 91
 - **Forza Horizon 6** (2026-05-19) — Metascore: 90
 - **Mina the Hollower** (2026-05-29) — Metascore: 90
 - **Elden Ring: Tarnished Edition** (2026-08-28) — Metascore: 90
 - **Trails in the Sky 2nd Chapter** (2026-09-17) — Metascore: 90
-- **Resident Evil 4: Gold Edition** (2026-10-16) — Metascore: 90
 
 <!-- STATS_END -->
+
 
 
 
